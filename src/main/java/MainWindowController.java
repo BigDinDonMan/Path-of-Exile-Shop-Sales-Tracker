@@ -33,6 +33,17 @@ public class MainWindowController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        GlobalResources.initialize();
 
+        itemCategoryComboBox.setCellFactory(callback -> new ListCell<>() {
+            @Override
+            protected void updateItem(ItemCategory item, boolean empty) {
+                super.updateItem(item, empty);
+                if (!isEmpty()) {
+                    setText(item.prettifyName());
+                    setGraphic(null);
+                }
+            }
+        });
     }
 }

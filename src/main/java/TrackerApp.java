@@ -1,9 +1,17 @@
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import org.kordamp.bootstrapfx.BootstrapFX;
 
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.net.URISyntaxException;
+
+//todo: add application icon
 public class TrackerApp extends javafx.application.Application {
     @Override
     public void start(Stage stage) throws Exception {
@@ -15,7 +23,47 @@ public class TrackerApp extends javafx.application.Application {
         stage.setMinWidth(450);
         stage.setScene(s);
         stage.setTitle("Path of Exile Shop Sales Tracker");
+//        setUpSystemTrayIfSupported(stage);
         stage.show();
+    }
+
+    private void setUpSystemTrayIfSupported(Stage s) {
+        if (!SystemTray.isSupported()) return;
+
+        Platform.setImplicitExit(false);
+        SystemTray tray = SystemTray.getSystemTray();
+        java.awt.Image icon = null;
+
+        try {
+            icon = ImageIO.read(getClass().getResource("images/tray-icon.png").toURI().toURL());
+        } catch (IOException | URISyntaxException e) {
+            e.printStackTrace();
+            Platform.setImplicitExit(true);
+            return;
+        }
+
+        s.setOnCloseRequest(e -> hideStage(s));
+        ActionListener closeListener = e -> System.exit(0);
+        ActionListener showListener = e -> showStage(s);
+
+        PopupMenu menu = new PopupMenu();
+
+        TrayIcon tIcon = new TrayIcon(icon, s.getTitle(), menu);
+        tIcon.addActionListener(showListener);
+
+        try {
+            tray.add(tIcon);
+        } catch (AWTException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void hideStage(Stage s) {
+        Platform.runLater(s::hide);
+    }
+
+    private void showStage(Stage s) {
+        Platform.runLater(s::show);
     }
 
     public static void main(String[] args) {

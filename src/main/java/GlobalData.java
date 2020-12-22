@@ -9,9 +9,7 @@ import java.io.IOException;
 import java.lang.reflect.Type;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class GlobalData {
 
@@ -42,7 +40,10 @@ public class GlobalData {
     }
 
     private static void loadResources() throws IOException {
-        currencies = loadResourceFile(System.getProperty("user.dir") + File.separator + "resources" + File.separator + "currencies.json");
+        currencies = loadResourceFile(
+                System.getProperty("user.dir") + File.separator + "resources" + File.separator + "currencies.json",
+                String[].class
+        );
         currencyIcons = new HashMap<>();
 
         currencies.forEach(name -> {
@@ -51,14 +52,16 @@ public class GlobalData {
             currencyIcons.put(name, i);
         });
 
-        sales = loadResourceFile(System.getProperty("user.dir") + File.separator + "resources" + File.separator + "sales.json");
+        sales = loadResourceFile(
+                System.getProperty("user.dir") + File.separator + "resources" + File.separator + "sales.json",
+                ShopSale[].class
+        );
     }
 
-    private static <T> T loadResourceFile(String path) throws IOException {
+    private static <T> List<T> loadResourceFile(String path, Class<T[]> klass) throws IOException {
         Gson g = new Gson();
-        Type t = new TypeToken<T>(){}.getType();
         String json = new String(Files.readAllBytes(Paths.get(path)));
-        return g.fromJson(json, t);
+        return new ArrayList<>(Arrays.asList(g.fromJson(json, klass)));
     }
 
     public static void saveSalesData() throws IOException {

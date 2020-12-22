@@ -1,4 +1,5 @@
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import javafx.scene.image.Image;
 import lombok.Getter;
@@ -12,10 +13,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class GlobalResources {
+public class GlobalData {
 
-    private GlobalResources() {}
+    private GlobalData() {}
 
+    //mutable data
+    @Getter
+    private static List<ShopSale> sales;
+
+    //resources
     @Getter
     private static List<String> currencies;
     @Getter
@@ -41,9 +47,11 @@ public class GlobalResources {
 
         currencies.forEach(name -> {
             String filename = String.join("-", name.toLowerCase().split(" "));
-            Image i = new Image(GlobalResources.class.getResource(String.format("images/%s.png", filename)).toExternalForm());
+            Image i = new Image(GlobalData.class.getResource(String.format("images/%s.png", filename)).toExternalForm());
             currencyIcons.put(name, i);
         });
+
+        sales = loadResourceFile(System.getProperty("user.dir") + File.separator + "resources" + File.separator + "sales.json");
     }
 
     private static <T> T loadResourceFile(String path) throws IOException {
@@ -51,5 +59,15 @@ public class GlobalResources {
         Type t = new TypeToken<T>(){}.getType();
         String json = new String(Files.readAllBytes(Paths.get(path)));
         return g.fromJson(json, t);
+    }
+
+    public static void saveSalesData() throws IOException {
+        GsonBuilder builder = new GsonBuilder();
+        Gson g = builder.setPrettyPrinting().create();
+        String salesJson = g.toJson(sales);
+        Files.writeString(
+                Paths.get(System.getProperty("user.dir") + File.separator + "resources" + File.separator + "sales.json"),
+                salesJson
+        );
     }
 }

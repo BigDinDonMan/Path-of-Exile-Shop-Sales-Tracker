@@ -19,14 +19,13 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-
 <AnchorPane prefHeight="676.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="MainWindowController">
    <children>
       <MenuBar layoutY="-2.0" prefHeight="32.0" prefWidth="850.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <menus>
           <Menu mnemonicParsing="false" text="File">
                <items>
-                  <MenuItem mnemonicParsing="false" text="Save sales">
+                  <MenuItem mnemonicParsing="false" text="Save sales" onAction="#saveShopSales">
                      <accelerator>
                         <KeyCodeCombination alt="UP" code="S" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                      </accelerator>
@@ -46,13 +45,13 @@
                <children>
                   <ListView fx:id="currenciesListView" layoutX="20.0" layoutY="333.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0" />
                   <Label layoutX="17.0" layoutY="308.0" text="Currencies" />
-                  <Button alignment="BOTTOM_CENTER" contentDisplay="CENTER" layoutX="142.0" layoutY="554.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="140.0" text="Add new sale" AnchorPane.leftAnchor="140.0" AnchorPane.rightAnchor="140.0">
+                  <Button alignment="BOTTOM_CENTER" contentDisplay="CENTER" layoutX="142.0" layoutY="554.0" mnemonicParsing="false" onAction="#addNewShopSale" prefHeight="31.0" prefWidth="140.0" text="Add new sale" AnchorPane.leftAnchor="140.0" AnchorPane.rightAnchor="140.0">
                      <styleClass>
                         <String fx:value="btn" />
                         <String fx:value="btn-primary" />
                      </styleClass>
                   </Button>
-                  <Button fx:id="addCurrencyButton" alignment="CENTER" layoutX="146.0" layoutY="249.0" mnemonicParsing="false" text="Add currency" AnchorPane.leftAnchor="146.0" AnchorPane.rightAnchor="146.0">
+                  <Button alignment="CENTER" layoutX="146.0" layoutY="249.0" mnemonicParsing="false" onAction="#addNewCurrency" text="Add currency" AnchorPane.leftAnchor="146.0" AnchorPane.rightAnchor="146.0">
                      <styleClass>
                         <String fx:value="btn" />
                         <String fx:value="btn-primary" />
@@ -159,6 +158,6 @@
             </AnchorPane>
          </content>
       </ScrollPane>
-      <ListView layoutX="14.0" layoutY="63.0" prefHeight="423.0" prefWidth="432.0" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="63.0" />
+      <ListView fx:id="shopSalesListView" layoutX="14.0" layoutY="63.0" prefHeight="423.0" prefWidth="432.0" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="63.0" />
    </children>
 </AnchorPane>

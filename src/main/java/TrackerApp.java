@@ -23,6 +23,7 @@ public class TrackerApp extends javafx.application.Application {
         stage.setMinWidth(450);
         stage.setScene(s);
         stage.setTitle("Path of Exile Shop Sales Tracker");
+        stage.getIcons().add(new javafx.scene.image.Image(getClass().getResource("images/app-icon.png").toExternalForm()));
 //        setUpSystemTrayIfSupported(stage);
         stage.show();
     }
@@ -43,10 +44,20 @@ public class TrackerApp extends javafx.application.Application {
         }
 
         s.setOnCloseRequest(e -> hideStage(s));
-        ActionListener closeListener = e -> System.exit(0);
+        ActionListener closeListener = e -> {
+            s.close();
+            Platform.exit();
+            System.exit(0);
+        };
         ActionListener showListener = e -> showStage(s);
 
         PopupMenu menu = new PopupMenu();
+        MenuItem closeItem = new MenuItem("Close application");
+        closeItem.addActionListener(closeListener);
+        MenuItem showItem = new MenuItem("Show application");
+        showItem.addActionListener(showListener);
+        menu.add(showItem);
+        menu.add(closeItem);
 
         TrayIcon tIcon = new TrayIcon(icon, s.getTitle(), menu);
         tIcon.addActionListener(showListener);

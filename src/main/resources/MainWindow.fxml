@@ -25,7 +25,7 @@
         <menus>
           <Menu mnemonicParsing="false" text="File">
                <items>
-                  <MenuItem mnemonicParsing="false" text="Save sales" onAction="#saveShopSales">
+                  <MenuItem mnemonicParsing="false" onAction="#saveShopSales" text="Save sales">
                      <accelerator>
                         <KeyCodeCombination alt="UP" code="S" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                      </accelerator>
@@ -158,6 +158,9 @@
             </AnchorPane>
          </content>
       </ScrollPane>
-      <ListView fx:id="shopSalesListView" layoutX="14.0" layoutY="63.0" prefHeight="423.0" prefWidth="432.0" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="63.0" />
+      <ListView fx:id="shopSalesListView" layoutX="14.0" layoutY="91.0" prefHeight="571.0" prefWidth="432.0" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="91.0" />
+      <Label fx:id="statusLabel" layoutX="960.0" layoutY="5.0" textAlignment="RIGHT" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0" />
+      <ComboBox fx:id="dateFilterComboBox" layoutX="14.0" layoutY="51.0" prefHeight="31.0" prefWidth="175.0" promptText="Select date filter" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="51.0" />
+      <Button layoutX="208.0" layoutY="51.0" mnemonicParsing="false" onAction="#clearDateFilter" prefHeight="31.0" prefWidth="88.0" text="Clear filter" />
    </children>
 </AnchorPane>

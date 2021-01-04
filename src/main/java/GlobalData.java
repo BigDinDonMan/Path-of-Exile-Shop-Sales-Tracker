@@ -1,6 +1,8 @@
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.scene.image.Image;
 import lombok.Getter;
 
@@ -17,7 +19,7 @@ public class GlobalData {
 
     //mutable data
     @Getter
-    private static List<ShopSale> sales;
+    private static ObservableList<ShopSale> sales;
 
     //resources
     @Getter
@@ -52,15 +54,16 @@ public class GlobalData {
             currencyIcons.put(name, i);
         });
 
-        sales = loadResourceFile(
+        sales = FXCollections.observableArrayList(loadResourceFile(
                 System.getProperty("user.dir") + File.separator + "resources" + File.separator + "sales.json",
                 ShopSale[].class
-        );
+        ));
     }
 
     private static <T> List<T> loadResourceFile(String path, Class<T[]> klass) throws IOException {
         Gson g = new Gson();
-        String json = new String(Files.readAllBytes(Paths.get(path)));
+        byte[] fileBytes = Files.readAllBytes(Paths.get(path));
+        String json = new String(fileBytes);
         return new ArrayList<>(Arrays.asList(g.fromJson(json, klass)));
     }
 

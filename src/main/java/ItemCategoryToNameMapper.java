@@ -23,6 +23,7 @@ public class ItemCategoryToNameMapper implements BiFunction<String, ItemCategory
             case LEGION_EMBLEM:
             case MAP_FRAGMENT:
             case MAP:
+            case OTHER:
                 break;
 
             default:

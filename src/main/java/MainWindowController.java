@@ -5,6 +5,7 @@ import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Pos;
 import javafx.geometry.Side;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
@@ -167,21 +168,16 @@ public class MainWindowController implements Initializable {
         }));
 
         currenciesListView.setCellFactory(c -> new ListCell<>() {
-            private ImageView iv = new ImageView();
             @Override
             protected void updateItem(ReceivedCurrency item, boolean empty) {
                 super.updateItem(item, empty);
-                if (!isEmpty()) {
-                    HBox root = new HBox();
-                    Text initialText = new Text(String.format("- %dx ", item.getAmount()));
-                    ImageView iv = new ImageView();
-                    setGraphic(root);
-                    setText(null);
-                } else {
-                    setGraphic(null);
-                    setText(null);
-                }
-            }
+                setGraphic(
+                        !isEmpty() ?
+                                new CurrencyDisplayCell(item, GlobalData.getCurrencyIcons().get(item.getCurrencyName()), 32d, 14) :
+                                null
+                );
+                setText(null);
+        }
         });
     }
 
@@ -235,7 +231,7 @@ public class MainWindowController implements Initializable {
 
     @FXML
     private void addNewShopSale() {
-        String itemName = itemNameTextField.getText();
+        String itemName = itemNameTextField.getText().strip();
         if (itemName == null || itemName.isBlank()) {
             new Alert( Alert.AlertType.ERROR, "Please input a valid item name.").showAndWait();
             return;
@@ -311,5 +307,10 @@ public class MainWindowController implements Initializable {
     private void clearDateFilter() {
         dateFilterComboBox.getSelectionModel().clearSelection();
         filteredSaleList.setPredicate(s -> true);
+    }
+
+    @FXML
+    private void clearCurrencies() {
+        currenciesListView.getItems().clear();
     }
 }

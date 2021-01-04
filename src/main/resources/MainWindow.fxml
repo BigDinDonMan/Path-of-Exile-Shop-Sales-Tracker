@@ -16,6 +16,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
@@ -46,12 +47,6 @@
                   <ListView fx:id="currenciesListView" layoutX="20.0" layoutY="333.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0" />
                   <Label layoutX="17.0" layoutY="308.0" text="Currencies" />
                   <Button alignment="BOTTOM_CENTER" contentDisplay="CENTER" layoutX="142.0" layoutY="554.0" mnemonicParsing="false" onAction="#addNewShopSale" prefHeight="31.0" prefWidth="140.0" text="Add new sale" AnchorPane.leftAnchor="140.0" AnchorPane.rightAnchor="140.0">
-                     <styleClass>
-                        <String fx:value="btn" />
-                        <String fx:value="btn-primary" />
-                     </styleClass>
-                  </Button>
-                  <Button alignment="CENTER" layoutX="146.0" layoutY="249.0" mnemonicParsing="false" onAction="#addNewCurrency" text="Add currency" AnchorPane.leftAnchor="146.0" AnchorPane.rightAnchor="146.0">
                      <styleClass>
                         <String fx:value="btn" />
                         <String fx:value="btn-primary" />
@@ -154,6 +149,28 @@
                         </VBox>
                      </children>
                   </GridPane>
+                  <HBox alignment="CENTER" layoutX="16.0" layoutY="205.0" prefHeight="100.0" prefWidth="200.0" AnchorPane.leftAnchor="16.0" AnchorPane.rightAnchor="15.0">
+                     <children>
+                        <Button alignment="CENTER" mnemonicParsing="false" onAction="#addNewCurrency" text="Add currency">
+                           <HBox.margin>
+                              <Insets right="25.0" />
+                           </HBox.margin>
+                           <styleClass>
+                              <String fx:value="btn" />
+                              <String fx:value="btn-primary" />
+                           </styleClass>
+                        </Button>
+                        <Button mnemonicParsing="false" onAction="#clearCurrencies" text="Clear currencies">
+                           <HBox.margin>
+                              <Insets left="25.0" />
+                           </HBox.margin>
+                           <styleClass>
+                              <String fx:value="btn" />
+                              <String fx:value="btn-primary" />
+                           </styleClass>
+                        </Button>
+                     </children>
+                  </HBox>
                </children>
             </AnchorPane>
          </content>

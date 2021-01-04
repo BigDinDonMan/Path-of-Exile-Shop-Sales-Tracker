@@ -47,18 +47,14 @@ public class ShopSaleListCell extends ListCell<ShopSale> {
         VBox.setMargin(currenciesText, nodeInsets);
         var currenciesRoot = new VBox();
 
-        double iconSize = 24d;
         for (var currency : sale.getCurrencies()) {
-            var currencyRoot = new HBox();
-            currencyRoot.setAlignment(Pos.CENTER_LEFT);
-            var t = new Text(String.format("- %dx", currency.getAmount()));
-            t.setStyle("-fx-font-weight: bold;");
-            var currencyIconView = new ImageView();
-            currencyIconView.setFitHeight(iconSize);
-            currencyIconView.setFitWidth(iconSize);
-            currencyIconView.setImage(GlobalData.getCurrencyIcons().get(currency.getCurrencyName()));
-            currencyRoot.getChildren().addAll(t, currencyIconView);
-            currenciesRoot.getChildren().add(currencyRoot);
+            var displayCell = new CurrencyDisplayCell(
+                    currency,
+                    GlobalData.getCurrencyIcons().get(currency.getCurrencyName()),
+                    24d,
+                    12
+            );
+            currenciesRoot.getChildren().add(displayCell);
         }
         root.getChildren().addAll(dateLabel, itemNameText, categoryParent, currenciesText, currenciesRoot);
         return root;

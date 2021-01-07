@@ -21,6 +21,7 @@ public enum ItemCategory {
     SCARAB,
     MAP_FRAGMENT,
     LEGION_EMBLEM,
+    DIVINATION_CARD,
     OTHER;
 
     private static Map<ItemCategory, Color> categoryColors;
@@ -44,11 +45,12 @@ public enum ItemCategory {
         categoryColors.put(SCARAB, Color.rgb(97, 30, 144));
         categoryColors.put(MAP_FRAGMENT, Color.rgb(97, 30, 144));
         categoryColors.put(LEGION_EMBLEM, Color.rgb(57, 57, 56));
+        categoryColors.put(DIVINATION_CARD, Color.rgb(0,17,73));
         categoryColors.put(OTHER, DEFAULT_COLOR);
     }
 
     public static Color getCategoryColor(ItemCategory ic) {
-        return categoryColors.get(ic);
+        return categoryColors.getOrDefault(ic, DEFAULT_COLOR);
     }
 
     public String prettifyName() {

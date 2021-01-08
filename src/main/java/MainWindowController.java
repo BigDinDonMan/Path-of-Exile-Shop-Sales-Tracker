@@ -96,18 +96,33 @@ public class MainWindowController implements Initializable {
             Platform.runLater(() -> statusLabel.setText(newValue ? "Unsaved changes!" : ""));
         });
 
-        setUpSalesListView();
-        setUpAutoCompleter();
+        setUpListViewAndAutoCompleter();
         setUpNewSaleForm();
         setUpSaleFilters();
     }
 
     //<editor-fold desc="setup methods">
-    private void setUpSalesListView() {
+    private void setUpListViewAndAutoCompleter() {
         shopSalesListView.setCellFactory(c -> new ShopSaleListCell());
         executorService.submit(() -> {
-           var sales = ApplicationDatabase.fetchAllSales();
-           Platform.runLater(() -> shopSalesListView.getItems().addAll(sales));
+            List<ShopSale> sales = ApplicationDatabase.fetchAllSales();
+            Platform.runLater(() -> {
+                shopSalesListView.getItems().addAll(sales);
+            });
+            nameMapper = new ItemCategoryToNameMapper();
+            itemNamesAutoCompleteMenu = new ContextMenu();
+            itemNamesAutoCompleteMenu.setPrefWidth(itemNameTextField.getWidth());
+            autoCompleteData = sales.stream().
+                    map(sale -> nameMapper.apply(sale.getItem().getName(), sale.getItem().getCategory())).
+                    filter(name -> !name.isBlank()).distinct().
+                    map(s -> {
+                        MenuItem item = new MenuItem(s);
+                        item.setOnAction(e -> {
+                            itemNameTextField.setText(item.getText());
+                            itemNameTextField.positionCaret(item.getText().length());
+                        });
+                        return item;
+                    }).collect(Collectors.toList());
         });
     }
 
@@ -199,23 +214,6 @@ public class MainWindowController implements Initializable {
         });
     }
 
-    private void setUpAutoCompleter() {
-        nameMapper = new ItemCategoryToNameMapper();
-        itemNamesAutoCompleteMenu = new ContextMenu();
-        itemNamesAutoCompleteMenu.setPrefWidth(itemNameTextField.getWidth());
-        autoCompleteData = shopSalesListView.getItems().stream().
-                map(sale -> nameMapper.apply(sale.getItem().getName(), sale.getItem().getCategory())).
-                filter(name -> !name.isBlank()).distinct().
-                map(s -> {
-                    MenuItem item = new MenuItem(s);
-                    item.setOnAction(e -> {
-                        itemNameTextField.setText(item.getText());
-                        itemNameTextField.positionCaret(item.getText().length());
-                    });
-                    return item;
-                }).collect(Collectors.toList());
-    }
-
     private void setUpSaleFilters() {
         dateFilterComboBox.getItems().addAll(
                 ApplicationDatabase.fetchSaleDates(true)
@@ -277,7 +275,6 @@ public class MainWindowController implements Initializable {
     //</editor-fold>
 
     private void filterSales() {
-        System.out.println("here");
         LocalDate predicateDate = dateFilterComboBox.getSelectionModel().getSelectedItem();
         ItemCategory predicateCategory = categoryFilterComboBox.getSelectionModel().getSelectedItem();
         dateFilterComboBox.setDisable(true);

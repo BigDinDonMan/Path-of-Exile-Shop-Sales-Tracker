@@ -25,12 +25,14 @@ public class ApplicationDatabase {
 
     private static SessionFactory sessionFactory;
 
+    private static boolean production = false;
+
 
     private ApplicationDatabase() {}
 
     public static void initialize() {
         dbConfig = new Configuration();
-        dbConfig.configure("hibernate.cfg.xml");
+        dbConfig.configure(production ? "hibernate.cfg.xml" : "hibernate-dev.cfg.xml");
         var annotatedClasses = Arrays.asList(
                 ShopSale.class,
                 ReceivedCurrency.class,

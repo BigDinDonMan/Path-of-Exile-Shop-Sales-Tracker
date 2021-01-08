@@ -22,6 +22,7 @@ public enum ItemCategory {
     MAP_FRAGMENT,
     LEGION_EMBLEM,
     DIVINATION_CARD,
+    INCUBATOR,
     OTHER;
 
     private static Map<ItemCategory, Color> categoryColors;

@@ -308,7 +308,7 @@ public class MainWindowController implements Initializable {
             new Alert(Alert.AlertType.ERROR, "Please select a valid date from the date picker.").showAndWait();
             return;
         }
-        ShopSale sale = new ShopSale(new SoldItem(itemName, itemAmount, category), date, currencies);
+        ShopSale sale = new ShopSale(0L, date, currencies, new SoldItem(itemName, itemAmount, category));
         GlobalData.getSales().add(sale);
         unsavedChangesPresent.setValue(true);
         onSaleAdded(sale);

@@ -13,6 +13,7 @@ import javax.transaction.Transactional;
 import java.io.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -82,8 +83,37 @@ public class ApplicationDatabase {
         return sales;
     }
 
-    public static List<ShopSale> fetchSalesMatching(String sqlQuery) {
-        return null;
+    public static List<ShopSale> fetchSalesMatching(LocalDate predicateDate, ItemCategory predicateCategory) {
+        Session session = getNewSession();
+        Transaction transaction = session.beginTransaction();
+
+        List<ShopSale> results = null;
+        CriteriaBuilder builder = session.getCriteriaBuilder();
+        if (predicateCategory == null && predicateDate == null) {
+            results = session.createQuery("from ShopSale", ShopSale.class).getResultList();
+        } else {
+            CriteriaQuery<ShopSale> query = builder.createQuery(ShopSale.class);
+            Root<ShopSale> root = query.from(ShopSale.class);
+            List<Predicate> predicates = new ArrayList<>();
+            if (predicateCategory == null && predicateDate != null) {
+                predicates.add(builder.equal(root.get("saleDate"), predicateDate));
+            } else if (predicateCategory != null && predicateDate == null) {
+                predicates.add(builder.equal(root.get("item").get("category"), predicateCategory));
+            } else {
+                predicates.addAll(
+                        Arrays.asList(
+                                builder.equal(root.get("item").get("category"), predicateCategory),
+                                builder.equal(root.get("saleDate"), predicateDate)
+                        )
+                );
+            }
+            query.select(root).where(predicates.toArray(Predicate[]::new));
+            results = session.createQuery(query).getResultList();
+        }
+
+        transaction.commit();
+        session.close();
+        return results;
     }
 
     public static boolean exportSalesToTxt(String filePath) {

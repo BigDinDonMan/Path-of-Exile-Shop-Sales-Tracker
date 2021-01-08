@@ -7,32 +7,23 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Side;
 import javafx.scene.control.*;
-import javafx.scene.control.Label;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.text.Text;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
-import java.awt.*;
-import java.io.File;
-import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.function.BiFunction;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-//todo: add sorting mode to sales list view
 //todo: make application go into system tray after closing/minimizing the window
-//todo: store path to resources/sales json file in a configuration file and create Config object to map to
-//todo: add category filter to list view
-//todo: extract predicate selection from combo boxes to a separate method
 //todo: add undo to adding last shop sale
 public class MainWindowController implements Initializable {
 
@@ -79,9 +70,12 @@ public class MainWindowController implements Initializable {
 
     private BooleanProperty unsavedChangesPresent;
 
+    private ExecutorService executorService;
+
     public MainWindowController() {
         unsavedChangesPresent = new SimpleBooleanProperty();
         recentlyAddedSalesList = new ArrayList<>();
+        executorService = Executors.newSingleThreadExecutor();
     }
 
     @Override
@@ -212,12 +206,11 @@ public class MainWindowController implements Initializable {
     }
 
     private void setUpSaleFilters() {
-//        ApplicationDatabase.exportSalesToTxt(System.getProperty("user.dir") + File.separator + "test-export.txt");
         dateFilterComboBox.getItems().addAll(
                 ApplicationDatabase.fetchSaleDates(true)
         );
-        dateFilterComboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-        });
+
+        dateFilterComboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> filterSales());
 
         dateFilterComboBox.setButtonCell(new ListCell<>() {
             @Override
@@ -258,12 +251,20 @@ public class MainWindowController implements Initializable {
             }
         });
 
-        categoryFilterComboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-        });
+        categoryFilterComboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> filterSales());
 
         categoryFilterComboBox.getItems().addAll(ItemCategory.values());
     }
     //</editor-fold>
+
+    private void filterSales() {
+        shopSalesListView.getItems().clear();
+        LocalDate predicateDate = dateFilterComboBox.getSelectionModel().getSelectedItem();
+        ItemCategory predicateCategory = categoryFilterComboBox.getSelectionModel().getSelectedItem();
+        shopSalesListView.getItems().addAll(
+                ApplicationDatabase.fetchSalesMatching(predicateDate, predicateCategory)
+        );
+    }
 
     @FXML
     private void addNewCurrency() {
@@ -312,6 +313,9 @@ public class MainWindowController implements Initializable {
 
     @FXML
     private void saveShopSales() {
+        if (recentlyAddedSalesList.isEmpty()) {
+            return;
+        }
         Session session = ApplicationDatabase.getNewSession();
         Transaction transaction = null;
         try {
@@ -330,11 +334,13 @@ public class MainWindowController implements Initializable {
             transaction.commit();
             shopSalesListView.getItems().addAll(recentlyAddedSalesList);
             recentlyAddedSalesList.clear();
+            new Alert(Alert.AlertType.INFORMATION, "Sales data saved successfully to database").showAndWait();
         } catch (Exception ex) {
             ex.printStackTrace();
             if (transaction != null) {
                 transaction.rollback();
             }
+            new Alert(Alert.AlertType.ERROR, "Error: " + ex.getMessage() + "\nRolling back...").showAndWait();
         } finally {
             session.close();
         }
@@ -370,11 +376,15 @@ public class MainWindowController implements Initializable {
     private void clearFilters() {
         dateFilterComboBox.getSelectionModel().clearSelection();
         categoryFilterComboBox.getSelectionModel().clearSelection();
-        filteredSaleList.setPredicate(s -> true);
+//        filteredSaleList.setPredicate(s -> true);
     }
 
     @FXML
     private void clearCurrencies() {
         currenciesListView.getItems().clear();
+    }
+
+    public void shutdown() {
+        executorService.shutdown();
     }
 }

@@ -9,6 +9,7 @@ import org.hibernate.query.Query;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.criteria.*;
+import javax.transaction.Transactional;
 import java.io.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -49,7 +50,7 @@ public class ApplicationDatabase {
         }
     }
 
-    public static List<LocalDate> getSaleDates(boolean distinct) {
+    public static List<LocalDate> fetchSaleDates(boolean distinct) {
         Session session = getNewSession();
         Transaction transaction = session.beginTransaction();
 
@@ -63,6 +64,26 @@ public class ApplicationDatabase {
         transaction.commit();
         session.close();
         return dates;
+    }
+
+
+    public static List<ShopSale> fetchAllSales() {
+        Session session = getNewSession();
+        Transaction transaction = session.beginTransaction();
+
+        CriteriaBuilder cb = session.getCriteriaBuilder();
+        CriteriaQuery<ShopSale> query = cb.createQuery(ShopSale.class);
+        Root<ShopSale> root = query.from(ShopSale.class);
+        query.select(root);
+        List<ShopSale> sales = session.createQuery(query).getResultList();
+
+        transaction.commit();
+        session.close();
+        return sales;
+    }
+
+    public static List<ShopSale> fetchSalesMatching(String sqlQuery) {
+        return null;
     }
 
     public static boolean exportSalesToTxt(String filePath) {

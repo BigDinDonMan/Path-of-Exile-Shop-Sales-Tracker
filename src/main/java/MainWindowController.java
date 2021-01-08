@@ -91,17 +91,18 @@ public class MainWindowController implements Initializable {
             Platform.runLater(() -> statusLabel.setText(newValue ? "Unsaved changes!" : ""));
         });
 
-        setUpAutoCompleter();
         setUpSalesListView();
+        setUpAutoCompleter();
         setUpNewSaleForm();
         setUpSaleFilters();
     }
 
     //<editor-fold desc="setup methods">
     private void setUpSalesListView() {
-        sortedSaleList = new SortedList<>(GlobalData.getSales(), Comparator.comparing(ShopSale::getSaleDate));
-        filteredSaleList = new FilteredList<>(sortedSaleList);
+//        sortedSaleList = new SortedList<>(GlobalData.getSales(), Comparator.comparing(ShopSale::getSaleDate));
+//        filteredSaleList = new FilteredList<>(sortedSaleList);
 //        shopSalesListView.setItems(filteredSaleList);
+        shopSalesListView.getItems().addAll(ApplicationDatabase.fetchAllSales());
         shopSalesListView.setCellFactory(c -> new ShopSaleListCell());
     }
 
@@ -197,31 +198,25 @@ public class MainWindowController implements Initializable {
         nameMapper = new ItemCategoryToNameMapper();
         itemNamesAutoCompleteMenu = new ContextMenu();
         itemNamesAutoCompleteMenu.setPrefWidth(itemNameTextField.getWidth());
-        autoCompleteData = GlobalData.getSales().
-                stream().
+        autoCompleteData = shopSalesListView.getItems().stream().
                 map(sale -> nameMapper.apply(sale.getItem().getName(), sale.getItem().getCategory())).
-                filter(name -> !name.isBlank()).
-                distinct().map(s -> {
-            MenuItem item = new MenuItem(s);
-            item.setOnAction(e -> {
-                itemNameTextField.setText(item.getText());
-                itemNameTextField.positionCaret(item.getText().length());
-            });
-            return item;
-        }).collect(Collectors.toList());
+                filter(name -> !name.isBlank()).distinct().
+                map(s -> {
+                    MenuItem item = new MenuItem(s);
+                    item.setOnAction(e -> {
+                        itemNameTextField.setText(item.getText());
+                        itemNameTextField.positionCaret(item.getText().length());
+                    });
+                    return item;
+                }).collect(Collectors.toList());
     }
 
     private void setUpSaleFilters() {
 //        ApplicationDatabase.exportSalesToTxt(System.getProperty("user.dir") + File.separator + "test-export.txt");
         dateFilterComboBox.getItems().addAll(
-                ApplicationDatabase.getSaleDates(true)
+                ApplicationDatabase.fetchSaleDates(true)
         );
         dateFilterComboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-//            filteredSaleList.setPredicate(s -> s.getSaleDate().equals(newValue));
-//            var selectedCategory = categoryFilterComboBox.getSelectionModel().getSelectedItem();
-//            Predicate<ShopSale> categoryFilter = selectedCategory == null ? s -> true : s -> s.getItem().getCategory().equals(selectedCategory);
-//            Predicate<ShopSale> dateFilter = s -> s.getSaleDate().equals(newValue);
-//            filteredSaleList.setPredicate(dateFilter.and(categoryFilter));
         });
 
         dateFilterComboBox.setButtonCell(new ListCell<>() {
@@ -264,10 +259,6 @@ public class MainWindowController implements Initializable {
         });
 
         categoryFilterComboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-//            var selectedDate = dateFilterComboBox.getSelectionModel().getSelectedItem();
-//            Predicate<ShopSale> dateFilter = selectedDate == null ? s -> true : s -> s.getSaleDate().equals(selectedDate);
-//            Predicate<ShopSale> categoryFilter = s -> s.getItem().getCategory().equals(newValue);
-//            filteredSaleList.setPredicate(dateFilter.and(categoryFilter));
         });
 
         categoryFilterComboBox.getItems().addAll(ItemCategory.values());

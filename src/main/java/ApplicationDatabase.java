@@ -75,7 +75,7 @@ public class ApplicationDatabase {
         CriteriaBuilder cb = session.getCriteriaBuilder();
         CriteriaQuery<ShopSale> query = cb.createQuery(ShopSale.class);
         Root<ShopSale> root = query.from(ShopSale.class);
-        query.select(root);
+        query.select(root).orderBy(cb.asc(root.get("saleDate")));
         List<ShopSale> sales = session.createQuery(query).getResultList();
 
         transaction.commit();
@@ -90,7 +90,7 @@ public class ApplicationDatabase {
         List<ShopSale> results = null;
         CriteriaBuilder builder = session.getCriteriaBuilder();
         if (predicateCategory == null && predicateDate == null) {
-            results = session.createQuery("from ShopSale", ShopSale.class).getResultList();
+            results = session.createQuery("from ShopSale as s order by s.saleDate", ShopSale.class).getResultList();
         } else {
             CriteriaQuery<ShopSale> query = builder.createQuery(ShopSale.class);
             Root<ShopSale> root = query.from(ShopSale.class);
@@ -107,7 +107,7 @@ public class ApplicationDatabase {
                         )
                 );
             }
-            query.select(root).where(predicates.toArray(Predicate[]::new));
+            query.select(root).where(predicates.toArray(Predicate[]::new)).orderBy(builder.asc(root.get("saleDate")));
             results = session.createQuery(query).getResultList();
         }
 

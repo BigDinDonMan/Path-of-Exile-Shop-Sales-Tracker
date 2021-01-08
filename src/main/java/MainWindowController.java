@@ -1,6 +1,7 @@
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.collections.FXCollections;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
@@ -20,6 +21,9 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
@@ -60,6 +64,9 @@ public class MainWindowController implements Initializable {
     @FXML
     private ComboBox<ItemCategory> categoryFilterComboBox;
 
+    @FXML
+    private Button clearFiltersButton;
+
     private ContextMenu itemNamesAutoCompleteMenu;
     private List<MenuItem> autoCompleteData;
     private BiFunction<String, ItemCategory, String> nameMapper;
@@ -70,12 +77,16 @@ public class MainWindowController implements Initializable {
 
     private BooleanProperty unsavedChangesPresent;
 
+    private AtomicBoolean clearingFilters;
     private ExecutorService executorService;
+    private Lock threadLock;
 
     public MainWindowController() {
+        clearingFilters = new AtomicBoolean(false);
         unsavedChangesPresent = new SimpleBooleanProperty();
         recentlyAddedSalesList = new ArrayList<>();
         executorService = Executors.newSingleThreadExecutor();
+        threadLock = new ReentrantLock();
     }
 
     @Override
@@ -93,11 +104,11 @@ public class MainWindowController implements Initializable {
 
     //<editor-fold desc="setup methods">
     private void setUpSalesListView() {
-//        sortedSaleList = new SortedList<>(GlobalData.getSales(), Comparator.comparing(ShopSale::getSaleDate));
-//        filteredSaleList = new FilteredList<>(sortedSaleList);
-//        shopSalesListView.setItems(filteredSaleList);
-        shopSalesListView.getItems().addAll(ApplicationDatabase.fetchAllSales());
         shopSalesListView.setCellFactory(c -> new ShopSaleListCell());
+        executorService.submit(() -> {
+           var sales = ApplicationDatabase.fetchAllSales();
+           Platform.runLater(() -> shopSalesListView.getItems().addAll(sales));
+        });
     }
 
     private void setUpNewSaleForm() {
@@ -210,7 +221,11 @@ public class MainWindowController implements Initializable {
                 ApplicationDatabase.fetchSaleDates(true)
         );
 
-        dateFilterComboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> filterSales());
+        dateFilterComboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (!clearingFilters.get()) {
+                filterSales();
+            }
+        });
 
         dateFilterComboBox.setButtonCell(new ListCell<>() {
             @Override
@@ -251,19 +266,35 @@ public class MainWindowController implements Initializable {
             }
         });
 
-        categoryFilterComboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> filterSales());
+        categoryFilterComboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (!clearingFilters.get()) {
+                filterSales();
+            }
+        });
 
         categoryFilterComboBox.getItems().addAll(ItemCategory.values());
     }
     //</editor-fold>
 
     private void filterSales() {
-        shopSalesListView.getItems().clear();
+        System.out.println("here");
         LocalDate predicateDate = dateFilterComboBox.getSelectionModel().getSelectedItem();
         ItemCategory predicateCategory = categoryFilterComboBox.getSelectionModel().getSelectedItem();
-        shopSalesListView.getItems().addAll(
-                ApplicationDatabase.fetchSalesMatching(predicateDate, predicateCategory)
-        );
+        dateFilterComboBox.setDisable(true);
+        categoryFilterComboBox.setDisable(true);
+        clearFiltersButton.setDisable(true);
+        executorService.submit(() -> {
+            threadLock.lock();
+            var matchedSales = ApplicationDatabase.fetchSalesMatching(predicateDate, predicateCategory);
+            Platform.runLater(() -> {
+                shopSalesListView.getItems().clear();
+                shopSalesListView.getItems().addAll(matchedSales);
+                dateFilterComboBox.setDisable(false);
+                categoryFilterComboBox.setDisable(false);
+                clearFiltersButton.setDisable(false);
+            });
+            threadLock.unlock();
+        });
     }
 
     @FXML
@@ -306,6 +337,7 @@ public class MainWindowController implements Initializable {
         }
         ShopSale sale = new ShopSale(0L, date, currencies, new SoldItem(itemName, itemAmount, category));
         recentlyAddedSalesList.add(sale);
+        shopSalesListView.getItems().add(sale);
         unsavedChangesPresent.setValue(true);
         onSaleAdded(sale);
         clearMandatoryInputs();
@@ -332,8 +364,8 @@ public class MainWindowController implements Initializable {
                 });
             });
             transaction.commit();
-            shopSalesListView.getItems().addAll(recentlyAddedSalesList);
             recentlyAddedSalesList.clear();
+            unsavedChangesPresent.setValue(false);
             new Alert(Alert.AlertType.INFORMATION, "Sales data saved successfully to database").showAndWait();
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -374,9 +406,11 @@ public class MainWindowController implements Initializable {
 
     @FXML
     private void clearFilters() {
+        clearingFilters.set(true);
         dateFilterComboBox.getSelectionModel().clearSelection();
         categoryFilterComboBox.getSelectionModel().clearSelection();
-//        filteredSaleList.setPredicate(s -> true);
+        clearingFilters.set(false);
+        filterSales();
     }
 
     @FXML

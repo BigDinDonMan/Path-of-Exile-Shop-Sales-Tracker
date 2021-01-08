@@ -178,7 +178,7 @@
       <ListView fx:id="shopSalesListView" layoutX="14.0" layoutY="91.0" prefHeight="571.0" prefWidth="432.0" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="91.0" />
       <Label fx:id="statusLabel" layoutX="960.0" layoutY="5.0" textAlignment="RIGHT" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0" />
       <ComboBox fx:id="dateFilterComboBox" layoutX="14.0" layoutY="51.0" prefHeight="31.0" prefWidth="129.0" promptText="Select date" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="51.0" />
-      <Button layoutX="350.0" layoutY="51.0" mnemonicParsing="false" onAction="#clearFilters" prefHeight="31.0" prefWidth="96.0" text="Clear filters">
+      <Button fx:id="clearFiltersButton" layoutX="350.0" layoutY="51.0" mnemonicParsing="false" onAction="#clearFilters" prefHeight="31.0" prefWidth="96.0" text="Clear filters">
          <styleClass>
             <String fx:value="btn" />
             <String fx:value="btn-primary" />

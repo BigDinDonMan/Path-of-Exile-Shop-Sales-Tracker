@@ -15,10 +15,7 @@ import org.hibernate.Transaction;
 
 import java.net.URL;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.ResourceBundle;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -417,5 +414,14 @@ public class MainWindowController implements Initializable {
 
     public void shutdown() {
         executorService.shutdown();
+        if (!recentlyAddedSalesList.isEmpty()) {
+            Alert a = new Alert(Alert.AlertType.CONFIRMATION, "You still have unsaved changes! Save now?");
+            Optional<ButtonType> result = a.showAndWait();
+            result.ifPresent(e -> {
+                if (e.equals(ButtonType.OK)) {
+                    saveShopSales();
+                }
+            });
+        }
     }
 }

@@ -5,13 +5,18 @@ import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.geometry.Pos;
 import javafx.geometry.Side;
 import javafx.scene.control.*;
+import javafx.scene.control.Label;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
 
+import java.awt.*;
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
@@ -96,7 +101,7 @@ public class MainWindowController implements Initializable {
     private void setUpSalesListView() {
         sortedSaleList = new SortedList<>(GlobalData.getSales(), Comparator.comparing(ShopSale::getSaleDate));
         filteredSaleList = new FilteredList<>(sortedSaleList);
-        shopSalesListView.setItems(filteredSaleList);
+//        shopSalesListView.setItems(filteredSaleList);
         shopSalesListView.setCellFactory(c -> new ShopSaleListCell());
     }
 
@@ -207,17 +212,16 @@ public class MainWindowController implements Initializable {
     }
 
     private void setUpSaleFilters() {
+//        ApplicationDatabase.exportSalesToTxt(System.getProperty("user.dir") + File.separator + "test-export.txt");
         dateFilterComboBox.getItems().addAll(
-                GlobalData.getSales().stream().map(ShopSale::getSaleDate).distinct().collect(Collectors.toUnmodifiableList())
+                ApplicationDatabase.getSaleDates(true)
         );
-        dateFilterComboBox.getItems().sort(Comparator.naturalOrder());
-
         dateFilterComboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
 //            filteredSaleList.setPredicate(s -> s.getSaleDate().equals(newValue));
-            var selectedCategory = categoryFilterComboBox.getSelectionModel().getSelectedItem();
-            Predicate<ShopSale> categoryFilter = selectedCategory == null ? s -> true : s -> s.getItem().getCategory().equals(selectedCategory);
-            Predicate<ShopSale> dateFilter = s -> s.getSaleDate().equals(newValue);
-            filteredSaleList.setPredicate(dateFilter.and(categoryFilter));
+//            var selectedCategory = categoryFilterComboBox.getSelectionModel().getSelectedItem();
+//            Predicate<ShopSale> categoryFilter = selectedCategory == null ? s -> true : s -> s.getItem().getCategory().equals(selectedCategory);
+//            Predicate<ShopSale> dateFilter = s -> s.getSaleDate().equals(newValue);
+//            filteredSaleList.setPredicate(dateFilter.and(categoryFilter));
         });
 
         dateFilterComboBox.setButtonCell(new ListCell<>() {
@@ -260,10 +264,10 @@ public class MainWindowController implements Initializable {
         });
 
         categoryFilterComboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            var selectedDate = dateFilterComboBox.getSelectionModel().getSelectedItem();
-            Predicate<ShopSale> dateFilter = selectedDate == null ? s -> true : s -> s.getSaleDate().equals(selectedDate);
-            Predicate<ShopSale> categoryFilter = s -> s.getItem().getCategory().equals(newValue);
-            filteredSaleList.setPredicate(dateFilter.and(categoryFilter));
+//            var selectedDate = dateFilterComboBox.getSelectionModel().getSelectedItem();
+//            Predicate<ShopSale> dateFilter = selectedDate == null ? s -> true : s -> s.getSaleDate().equals(selectedDate);
+//            Predicate<ShopSale> categoryFilter = s -> s.getItem().getCategory().equals(newValue);
+//            filteredSaleList.setPredicate(dateFilter.and(categoryFilter));
         });
 
         categoryFilterComboBox.getItems().addAll(ItemCategory.values());
@@ -309,7 +313,7 @@ public class MainWindowController implements Initializable {
             return;
         }
         ShopSale sale = new ShopSale(0L, date, currencies, new SoldItem(itemName, itemAmount, category));
-        GlobalData.getSales().add(sale);
+        recentlyAddedSalesList.add(sale);
         unsavedChangesPresent.setValue(true);
         onSaleAdded(sale);
         clearMandatoryInputs();
@@ -317,13 +321,31 @@ public class MainWindowController implements Initializable {
 
     @FXML
     private void saveShopSales() {
+        Session session = ApplicationDatabase.getNewSession();
+        Transaction transaction = null;
         try {
-            GlobalData.saveSalesData();
-            unsavedChangesPresent.setValue(false);
-            final Alert a = new Alert(Alert.AlertType.INFORMATION, "Sale data saved successfully!");
-            a.showAndWait();
-        } catch (IOException e) {
-            e.printStackTrace();
+            transaction = session.beginTransaction();
+            recentlyAddedSalesList.forEach(sale -> {
+                var item = sale.getItem();
+                item.setSale(sale);
+                var currencies = sale.getCurrencies();
+                session.save(sale);
+                session.save(item);
+                currencies.forEach(c -> {
+                    c.setSale(sale);
+                    session.save(c);
+                });
+            });
+            transaction.commit();
+            shopSalesListView.getItems().addAll(recentlyAddedSalesList);
+            recentlyAddedSalesList.clear();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            if (transaction != null) {
+                transaction.rollback();
+            }
+        } finally {
+            session.close();
         }
     }
 

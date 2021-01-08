@@ -3,6 +3,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -14,7 +15,7 @@ import java.util.List;
 @NoArgsConstructor
 @Entity
 @Table(name = "shop_sales")
-public class ShopSale {
+public class ShopSale implements Serializable, Comparable<ShopSale> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "sale_id")
@@ -43,5 +44,10 @@ public class ShopSale {
         sb.append("Received currencies:\n");
         currencies.forEach(c -> sb.append("\t- ").append(c.toString()).append('\n'));
         return sb.toString();
+    }
+
+    @Override
+    public int compareTo(ShopSale o) {
+        return this.saleDate.compareTo(o.saleDate);
     }
 }

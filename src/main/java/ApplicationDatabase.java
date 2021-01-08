@@ -1,10 +1,20 @@
 import lombok.Getter;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
+import org.hibernate.query.Query;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.criteria.*;
+import java.io.*;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class ApplicationDatabase {
 
@@ -12,6 +22,7 @@ public class ApplicationDatabase {
     private static Configuration dbConfig;
 
     private static SessionFactory sessionFactory;
+
 
     private ApplicationDatabase() {}
 
@@ -36,5 +47,53 @@ public class ApplicationDatabase {
         if (sessionFactory.isOpen()) {
             sessionFactory.close();
         }
+    }
+
+    public static List<LocalDate> getSaleDates(boolean distinct) {
+        Session session = getNewSession();
+        Transaction transaction = session.beginTransaction();
+
+        CriteriaBuilder cb = session.getCriteriaBuilder();
+        CriteriaQuery<LocalDate> query = cb.createQuery(LocalDate.class);
+        Root<ShopSale> root = query.from(ShopSale.class);
+        query.select(root.get("saleDate")).distinct(distinct).orderBy(cb.asc(root.get("saleDate")));
+
+        List<LocalDate> dates = session.createQuery(query).getResultList();
+
+        transaction.commit();
+        session.close();
+        return dates;
+    }
+
+    public static boolean exportSalesToTxt(String filePath) {
+        Session s = sessionFactory.openSession();
+        var sales = s.createQuery("from ShopSale", ShopSale.class).getResultList();
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(new File(filePath)))) {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            var dates = sales.stream().map(ShopSale::getSaleDate).distinct().collect(Collectors.toList());
+            for (var date : dates) {
+                var salesWithDateEqual = sales.stream().filter(_s -> _s.getSaleDate().equals(date)).collect(Collectors.toUnmodifiableList());
+                writer.write(date.format(formatter));
+                writer.write('\n');
+                for (var sale : salesWithDateEqual) {
+                    var item = sale.getItem();
+                    var currencies = sale.getCurrencies();
+                    var saleString = String.format(
+                            "- %dx %s, %s, %s",
+                            item.getAmount(),
+                            item.getName(),
+                            item.getCategory().name(),
+                            currencies.stream().map(ReceivedCurrency::toString).collect(Collectors.joining(", ")));
+                    writer.write(saleString);
+                    writer.write('\n');
+                }
+                writer.write('\n');
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+        s.close();
+        return true;
     }
 }

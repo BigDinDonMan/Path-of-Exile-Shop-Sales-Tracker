@@ -23,5 +23,9 @@
         </property>
 
         <property name="hibernate.current_session_context_class">thread</property>
+
+        <property name="connection.autoReconnect">true</property>
+        <property name="connection.autoReconnectForPools">true</property>
+        <property name="connection.is-connection-validation-required">true</property>
     </session-factory>
 </hibernate-configuration>

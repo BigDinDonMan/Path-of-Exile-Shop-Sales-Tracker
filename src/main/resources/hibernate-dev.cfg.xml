@@ -7,7 +7,7 @@
         </property>
 
         <property name="hibernate.connection.driver_class">
-            com.mysql.jdbc.Driver
+            com.mysql.cj.jdbc.Driver
         </property>
 
         <property name="hibernate.connection.url">
@@ -23,5 +23,10 @@
         </property>
 
         <property name="hibernate.current_session_context_class">thread</property>
+
+        <property name="connection.autoReconnect">true</property>
+        <property name="connection.autoReconnectForPools">true</property>
+        <property name="connection.is-connection-validation-required">true</property>
+        <property name="hibernate.connection.provider_class">org.hibernate.connection.C3P0ConnectionProvider</property>
     </session-factory>
 </hibernate-configuration>

@@ -26,6 +26,7 @@ import java.util.stream.Collectors;
 
 //todo: make application go into system tray after closing/minimizing the window
 //todo: add undo to adding last shop sale
+//todo: add progress bar/progress window when saving records to database
 public class MainWindowController implements Initializable {
 
     @FXML
@@ -75,15 +76,11 @@ public class MainWindowController implements Initializable {
     private BooleanProperty unsavedChangesPresent;
 
     private AtomicBoolean clearingFilters;
-    private ExecutorService executorService;
-    private Lock threadLock;
 
     public MainWindowController() {
         clearingFilters = new AtomicBoolean(false);
         unsavedChangesPresent = new SimpleBooleanProperty();
         recentlyAddedSalesList = new ArrayList<>();
-        executorService = Executors.newSingleThreadExecutor();
-        threadLock = new ReentrantLock();
     }
 
     @Override
@@ -101,26 +98,24 @@ public class MainWindowController implements Initializable {
     //<editor-fold desc="setup methods">
     private void setUpListViewAndAutoCompleter() {
         shopSalesListView.setCellFactory(c -> new ShopSaleListCell());
-        executorService.submit(() -> {
-            List<ShopSale> sales = ApplicationDatabase.fetchAllSales();
-            Platform.runLater(() -> {
-                shopSalesListView.getItems().addAll(sales);
-            });
-            nameMapper = new ItemCategoryToNameMapper();
-            itemNamesAutoCompleteMenu = new ContextMenu();
-            itemNamesAutoCompleteMenu.setPrefWidth(itemNameTextField.getWidth());
-            autoCompleteData = sales.stream().
-                    map(sale -> nameMapper.apply(sale.getItem().getName(), sale.getItem().getCategory())).
-                    filter(name -> !name.isBlank()).distinct().
-                    map(s -> {
-                        MenuItem item = new MenuItem(s);
-                        item.setOnAction(e -> {
-                            itemNameTextField.setText(item.getText());
-                            itemNameTextField.positionCaret(item.getText().length());
-                        });
-                        return item;
-                    }).collect(Collectors.toList());
+        List<ShopSale> sales = ApplicationDatabase.fetchAllSales();
+        Platform.runLater(() -> {
+            shopSalesListView.getItems().addAll(sales);
         });
+        nameMapper = new ItemCategoryToNameMapper();
+        itemNamesAutoCompleteMenu = new ContextMenu();
+        itemNamesAutoCompleteMenu.setPrefWidth(itemNameTextField.getWidth());
+        autoCompleteData = sales.stream().
+                map(sale -> nameMapper.apply(sale.getItem().getName(), sale.getItem().getCategory())).
+                filter(name -> !name.isBlank()).distinct().
+                map(s -> {
+                    MenuItem item = new MenuItem(s);
+                    item.setOnAction(e -> {
+                        itemNameTextField.setText(item.getText());
+                        itemNameTextField.positionCaret(item.getText().length());
+                    });
+                    return item;
+                }).collect(Collectors.toList());
     }
 
     private void setUpNewSaleForm() {
@@ -132,7 +127,7 @@ public class MainWindowController implements Initializable {
             autoCompleteData.
                     stream().
                     filter(i -> i.getText().toLowerCase().startsWith(input)).
-                    limit(15).
+                    limit(10).
                     forEach(e -> itemNamesAutoCompleteMenu.getItems().add(e));
 
             if (!itemNamesAutoCompleteMenu.isShowing()) {
@@ -274,21 +269,9 @@ public class MainWindowController implements Initializable {
     private void filterSales() {
         LocalDate predicateDate = dateFilterComboBox.getSelectionModel().getSelectedItem();
         ItemCategory predicateCategory = categoryFilterComboBox.getSelectionModel().getSelectedItem();
-        dateFilterComboBox.setDisable(true);
-        categoryFilterComboBox.setDisable(true);
-        clearFiltersButton.setDisable(true);
-        executorService.submit(() -> {
-            threadLock.lock();
-            var matchedSales = ApplicationDatabase.fetchSalesMatching(predicateDate, predicateCategory);
-            Platform.runLater(() -> {
-                shopSalesListView.getItems().clear();
-                shopSalesListView.getItems().addAll(matchedSales);
-                dateFilterComboBox.setDisable(false);
-                categoryFilterComboBox.setDisable(false);
-                clearFiltersButton.setDisable(false);
-            });
-            threadLock.unlock();
-        });
+        var matchedSales = ApplicationDatabase.fetchSalesMatching(predicateDate, predicateCategory);
+        shopSalesListView.getItems().clear();
+        shopSalesListView.getItems().addAll(matchedSales);
     }
 
     @FXML
@@ -413,7 +396,6 @@ public class MainWindowController implements Initializable {
     }
 
     public void shutdown() {
-        executorService.shutdown();
         if (!recentlyAddedSalesList.isEmpty()) {
             Alert a = new Alert(Alert.AlertType.CONFIRMATION, "You still have unsaved changes! Save now?");
             Optional<ButtonType> result = a.showAndWait();

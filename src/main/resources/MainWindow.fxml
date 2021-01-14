@@ -20,7 +20,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane prefHeight="676.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="MainWindowController">
+<AnchorPane fx:id="root" prefHeight="676.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="MainWindowController">
    <children>
       <MenuBar layoutY="-2.0" prefHeight="32.0" prefWidth="850.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <menus>
@@ -31,8 +31,22 @@
                         <KeyCodeCombination alt="UP" code="S" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                      </accelerator>
                   </MenuItem>
+                  <MenuItem mnemonicParsing="false" onAction="#loadLogFiles" text="Load log files">
+                     <accelerator>
+                        <KeyCodeCombination alt="UP" code="O" control="DOWN" meta="UP" shift="UP" shortcut="UP"/>
+                     </accelerator>
+                  </MenuItem>
                </items>
           </Menu>
+           <Menu mnemonicParsing="false" text="Edit">
+              <items>
+                 <MenuItem mnemonicParsing="false" text="Undo recent sale addition" onAction="#undoRecentSale">
+                    <accelerator>
+                       <KeyCodeCombination alt="UP" code="Z" control="DOWN" meta="UP" shift="UP" shortcut="UP"/>
+                    </accelerator>
+                 </MenuItem>
+              </items>
+           </Menu>
           <Menu mnemonicParsing="false" text="Help">
             <items>
               <MenuItem mnemonicParsing="false" text="About" />
@@ -178,7 +192,7 @@
       <ListView fx:id="shopSalesListView" layoutX="14.0" layoutY="91.0" prefHeight="571.0" prefWidth="432.0" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="91.0" />
       <Label fx:id="statusLabel" layoutX="960.0" layoutY="5.0" textAlignment="RIGHT" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0" />
       <ComboBox fx:id="dateFilterComboBox" layoutX="14.0" layoutY="51.0" prefHeight="31.0" prefWidth="129.0" promptText="Select date" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="51.0" />
-      <Button layoutX="350.0" layoutY="51.0" mnemonicParsing="false" onAction="#clearFilters" prefHeight="31.0" prefWidth="96.0" text="Clear filters">
+      <Button fx:id="clearFiltersButton" layoutX="350.0" layoutY="51.0" mnemonicParsing="false" onAction="#clearFilters" prefHeight="31.0" prefWidth="96.0" text="Clear filters">
          <styleClass>
             <String fx:value="btn" />
             <String fx:value="btn-primary" />

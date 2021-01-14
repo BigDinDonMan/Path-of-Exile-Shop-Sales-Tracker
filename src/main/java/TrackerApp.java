@@ -17,6 +17,7 @@ public class TrackerApp extends javafx.application.Application {
     public void start(Stage stage) throws Exception {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("MainWindow.fxml"));
         Parent p = loader.load();
+        MainWindowController controller = loader.getController();
         Scene s = new Scene(p);
         s.getStylesheets().add(BootstrapFX.bootstrapFXStylesheet());
         stage.setMinHeight(350);
@@ -25,6 +26,10 @@ public class TrackerApp extends javafx.application.Application {
         stage.setTitle("Path of Exile Shop Sales Tracker");
         stage.getIcons().add(new javafx.scene.image.Image(getClass().getResource("images/app-icon.png").toExternalForm()));
 //        setUpSystemTrayIfSupported(stage);
+        stage.setOnCloseRequest(e -> {
+            controller.shutdown();
+            ApplicationDatabase.shutdown();
+        });
         stage.show();
     }
 

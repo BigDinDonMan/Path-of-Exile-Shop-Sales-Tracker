@@ -18,8 +18,8 @@ public class GlobalData {
     private GlobalData() {}
 
     //mutable data
-    @Getter
-    private static ObservableList<ShopSale> sales;
+//    @Getter
+//    private static ObservableList<ShopSale> sales;
 
     //resources
     @Getter
@@ -54,10 +54,10 @@ public class GlobalData {
             currencyIcons.put(name, i);
         });
 
-        sales = FXCollections.observableArrayList(loadResourceFile(
-                System.getProperty("user.dir") + File.separator + "resources" + File.separator + "sales.json",
-                ShopSale[].class
-        ));
+//        sales = FXCollections.observableArrayList(loadResourceFile(
+//                System.getProperty("user.dir") + File.separator + "resources" + File.separator + "sales.json",
+//                ShopSale[].class
+//        ));
     }
 
     private static <T> List<T> loadResourceFile(String path, Class<T[]> klass) throws IOException {
@@ -66,14 +66,14 @@ public class GlobalData {
         String json = new String(fileBytes);
         return new ArrayList<>(Arrays.asList(g.fromJson(json, klass)));
     }
-
-    public static void saveSalesData() throws IOException {
-        GsonBuilder builder = new GsonBuilder();
-        Gson g = builder.setPrettyPrinting().create();
-        String salesJson = g.toJson(sales);
-        Files.writeString(
-                Paths.get(System.getProperty("user.dir") + File.separator + "resources" + File.separator + "sales.json"),
-                salesJson
-        );
-    }
+//
+//    public static void saveSalesData() throws IOException {
+//        GsonBuilder builder = new GsonBuilder();
+//        Gson g = builder.setPrettyPrinting().create();
+//        String salesJson = g.toJson(sales);
+//        Files.writeString(
+//                Paths.get(System.getProperty("user.dir") + File.separator + "resources" + File.separator + "sales.json"),
+//                salesJson
+//        );
+//    }
 }

@@ -32,6 +32,7 @@ import java.util.stream.Collectors;
 //todo: make application go into system tray after closing/minimizing the window
 //todo: add undo to adding last shop sale
 //todo: add progress bar/progress window when saving records to database
+//todo: add item category icons in combobox
 public class MainWindowController implements Initializable {
 
     @FXML

@@ -341,17 +341,19 @@ public class MainWindowController implements Initializable {
         Service<Boolean> saveService = createSaveService();
         ProgressDialog progressDialog = new ProgressDialog(saveService);
         saveService.setOnSucceeded(e -> {
+            saveService.cancel();
+            Alert a = new Alert(Alert.AlertType.INFORMATION, "Successfully saved sales data to your database");
+            a.showAndWait();
             progressDialog.close();
             unsavedChangesPresent.setValue(false);
             recentlyAddedSalesList.clear();
-            saveService.cancel();
         });
 
         saveService.setOnFailed(e -> {
+            saveService.cancel();
             Alert a = new Alert(Alert.AlertType.ERROR, "Error while saving to database: \n" + e.getSource().getMessage());
             a.showAndWait();
             progressDialog.close();
-            saveService.cancel();
         });
 
         progressDialog.setTitle("Saving to database...");

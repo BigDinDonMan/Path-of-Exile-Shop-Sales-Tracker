@@ -37,7 +37,9 @@ public class SaveSalesToDbTask extends Task<Boolean> {
                     c.setSale(sale);
                     session.save(c);
                 });
-                updateProgress(currentWork.incrementAndGet(), totalWork);
+                final int current = currentWork.incrementAndGet();
+                updateProgress(current, totalWork);
+                updateMessage(String.format("Saving progress: %d/%d", current, currentWork.get()));
             });
             transaction.commit();
         } catch (Exception e) {

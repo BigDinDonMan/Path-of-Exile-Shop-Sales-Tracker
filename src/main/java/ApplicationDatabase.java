@@ -25,7 +25,7 @@ public class ApplicationDatabase {
 
     private static SessionFactory sessionFactory;
 
-    private static boolean production = true;
+    private static boolean production = false;
 
 
     private ApplicationDatabase() {}

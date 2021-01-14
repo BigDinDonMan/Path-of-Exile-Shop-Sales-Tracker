@@ -5,14 +5,19 @@ import javafx.collections.FXCollections;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Side;
+import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
+import javafx.stage.FileChooser;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
+import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
 import java.util.*;
@@ -28,6 +33,9 @@ import java.util.stream.Collectors;
 //todo: add undo to adding last shop sale
 //todo: add progress bar/progress window when saving records to database
 public class MainWindowController implements Initializable {
+
+    @FXML
+    private AnchorPane root;
 
     @FXML
     private Label statusLabel;
@@ -404,6 +412,48 @@ public class MainWindowController implements Initializable {
                     saveShopSales();
                 }
             });
+        }
+    }
+
+    @FXML
+    private void loadLogFiles() {
+        FileChooser fc = new FileChooser();
+        var txtFilter = new FileChooser.ExtensionFilter("Txt log files (*.txt)", "*.txt");
+        fc.getExtensionFilters().add(txtFilter);
+        var files = fc.showOpenMultipleDialog(root.getScene().getWindow());
+        if (files != null && !files.isEmpty()) {
+            var fileLoader = new LogFileLoader(",", GlobalData.getCurrencies());
+            var sales = new ArrayList<ShopSale>();
+            files.forEach(f -> {
+                try {
+                    var loaded = fileLoader.load(f.getAbsolutePath());
+                    sales.addAll(loaded);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            });
+            var dialog = new LoadedShopSaleViewDialog(sales);
+            dialog.setTitle("Loaded sales display");
+            Optional<ButtonType> decision = dialog.showAndWait();
+            decision.ifPresent(type -> {
+                if (!type.equals(ButtonType.OK)) return;
+                //if all is good then add everything to list or database
+                recentlyAddedSalesList.addAll(sales);
+                saveShopSales();
+            });
+        }
+    }
+
+    @FXML
+    private void undoRecentSale() {
+        if (recentlyAddedSalesList.isEmpty()) {
+            return;
+        }
+        var toDelete = recentlyAddedSalesList.get(recentlyAddedSalesList.size() - 1);
+        recentlyAddedSalesList.remove(toDelete);
+        shopSalesListView.getItems().remove(toDelete);
+        if (recentlyAddedSalesList.isEmpty()) {
+            unsavedChangesPresent.setValue(false);
         }
     }
 }

@@ -1,23 +1,15 @@
-import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.*;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 
-import java.io.IOException;
-import java.net.URL;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.ResourceBundle;
-import java.util.stream.Collectors;
 
 public class LoadedShopSaleViewDialog extends Dialog<ButtonType>{
 
@@ -40,8 +32,7 @@ public class LoadedShopSaleViewDialog extends Dialog<ButtonType>{
         VBox root = new VBox();
         Text t = new Text("This is how your loaded sales look: ");
         loadedSalesTreeView = new TreeView<>();
-        root.getChildren().add(t);
-        root.getChildren().add(loadedSalesTreeView);
+        root.getChildren().addAll(t, loadedSalesTreeView);
         return root;
     }
 
@@ -50,7 +41,7 @@ public class LoadedShopSaleViewDialog extends Dialog<ButtonType>{
         var root = new TreeItem();
         loadedSalesTreeView.setRoot(root);
         loadedSalesTreeView.setShowRoot(false);
-        loadedSalesTreeView.setCellFactory(c -> new TreeCell<Object>() {
+        loadedSalesTreeView.setCellFactory(c -> new TreeCell<>() {
             private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
             private final Insets nodeInsets = new Insets(0, 0, 5, 0);
 
@@ -59,7 +50,7 @@ public class LoadedShopSaleViewDialog extends Dialog<ButtonType>{
                 super.updateItem(item, empty);
                 if (!isEmpty()) {
                     if (item instanceof ShopSale) {
-                        setGraphic(createDisplayControl((ShopSale)item));
+                        setGraphic(createDisplayControl((ShopSale) item));
                         setText(null);
                     } else {
                         setText(item.toString());
@@ -94,22 +85,21 @@ public class LoadedShopSaleViewDialog extends Dialog<ButtonType>{
                 VBox.setMargin(currenciesText, nodeInsets);
                 var currenciesRoot = new VBox();
 
-                for (var currency : sale.getCurrencies()) {
+                sale.getCurrencies().forEach(c -> {
                     var displayCell = new CurrencyDisplayCell(
-                            currency,
-                            GlobalData.getCurrencyIcons().get(currency.getCurrencyName()),
+                            c,
+                            GlobalData.getCurrencyIcons().get(c.getCurrencyName()),
                             24d,
                             12
                     );
                     currenciesRoot.getChildren().add(displayCell);
-                }
+                });
                 root.getChildren().addAll(dateLabel, itemNameText, categoryParent, currenciesText, currenciesRoot);
                 return root;
             }
         });
 
-        var dates = this.sales.stream().map(ShopSale::getSaleDate).distinct().collect(Collectors.toUnmodifiableList());
-        dates.forEach(date -> {
+        sales.stream().map(ShopSale::getSaleDate).distinct().forEach(date -> {
             TreeItem dateItem = new TreeItem(date);
             root.getChildren().add(dateItem);
             sales.stream().filter(s -> s.getSaleDate().equals(date)).forEach(s -> {

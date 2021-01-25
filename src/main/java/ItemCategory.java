@@ -9,7 +9,6 @@ public enum ItemCategory {
     JEWELLERY,
     UNIQUE,
     SKILL_GEM,
-    FOSSIL,
     BEAST,
     PROPHECY,
     MAP,
@@ -23,6 +22,7 @@ public enum ItemCategory {
     LEGION_EMBLEM,
     DIVINATION_CARD,
     INCUBATOR,
+    CRAFTING_SUPPLIES,
     OTHER;
 
     private static Map<ItemCategory, Color> categoryColors;
@@ -34,7 +34,7 @@ public enum ItemCategory {
         categoryColors.put(JEWELLERY, Color.rgb(255, 170, 0));
         categoryColors.put(UNIQUE, Color.rgb(125, 47, 17));
         categoryColors.put(SKILL_GEM, Color.rgb(25, 110, 75));
-        categoryColors.put(FOSSIL, Color.rgb(252, 96, 2));
+        categoryColors.put(CRAFTING_SUPPLIES, Color.rgb(252, 96, 2));
         categoryColors.put(BEAST,  Color.rgb(255, 170, 0));
         categoryColors.put(PROPHECY, Color.rgb(97, 30, 144));
         categoryColors.put(MAP, Color.rgb(57, 57, 56));

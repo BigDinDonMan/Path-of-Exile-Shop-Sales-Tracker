@@ -4,6 +4,9 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
+import javafx.concurrent.ScheduledService;
+import javafx.concurrent.Service;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -14,6 +17,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
+import org.controlsfx.dialog.ProgressDialog;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
@@ -32,6 +36,7 @@ import java.util.stream.Collectors;
 //todo: make application go into system tray after closing/minimizing the window
 //todo: add undo to adding last shop sale
 //todo: add progress bar/progress window when saving records to database
+//todo: add item category icons in combobox
 public class MainWindowController implements Initializable {
 
     @FXML
@@ -333,34 +338,42 @@ public class MainWindowController implements Initializable {
         if (recentlyAddedSalesList.isEmpty()) {
             return;
         }
-        Session session = ApplicationDatabase.getNewSession();
-        Transaction transaction = null;
-        try {
-            transaction = session.beginTransaction();
-            recentlyAddedSalesList.forEach(sale -> {
-                var item = sale.getItem();
-                item.setSale(sale);
-                var currencies = sale.getCurrencies();
-                session.save(sale);
-                session.save(item);
-                currencies.forEach(c -> {
-                    c.setSale(sale);
-                    session.save(c);
-                });
-            });
-            transaction.commit();
-            recentlyAddedSalesList.clear();
+        Service<Boolean> saveService = createSaveService();
+        ProgressDialog progressDialog = new ProgressDialog(saveService);
+        saveService.setOnSucceeded(e -> {
+            saveService.cancel();
+            Alert a = new Alert(Alert.AlertType.INFORMATION, "Successfully saved sales data to your database");
+            a.showAndWait();
+            progressDialog.close();
             unsavedChangesPresent.setValue(false);
-            new Alert(Alert.AlertType.INFORMATION, "Sales data saved successfully to database").showAndWait();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            if (transaction != null) {
-                transaction.rollback();
+            recentlyAddedSalesList.clear();
+        });
+
+        saveService.setOnFailed(e -> {
+            saveService.cancel();
+            Alert a = new Alert(Alert.AlertType.ERROR, "Error while saving to database: \n" + e.getSource().getMessage());
+            a.showAndWait();
+            progressDialog.close();
+        });
+
+        progressDialog.setTitle("Saving to database...");
+        progressDialog.setHeaderText("Saving to database...");
+        progressDialog.setOnCloseRequest(e -> {
+            saveService.cancel();
+            progressDialog.close();
+        });
+
+        saveService.start();
+        progressDialog.showAndWait();
+    }
+
+    private Service<Boolean> createSaveService() {
+        return new ScheduledService<Boolean>() {
+            @Override
+            protected Task<Boolean> createTask() {
+                return new SaveSalesToDbTask(recentlyAddedSalesList);
             }
-            new Alert(Alert.AlertType.ERROR, "Error: " + ex.getMessage() + "\nRolling back...").showAndWait();
-        } finally {
-            session.close();
-        }
+        };
     }
 
     private void clearMandatoryInputs() {

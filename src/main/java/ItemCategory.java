@@ -9,7 +9,6 @@ public enum ItemCategory {
     JEWELLERY,
     UNIQUE,
     SKILL_GEM,
-    FOSSIL,
     BEAST,
     PROPHECY,
     MAP,
@@ -23,6 +22,9 @@ public enum ItemCategory {
     LEGION_EMBLEM,
     DIVINATION_CARD,
     INCUBATOR,
+    CRAFTING_SUPPLY,
+    WATCHSTONE,
+//    ESSENCE,
     OTHER;
 
     private static Map<ItemCategory, Color> categoryColors;
@@ -30,23 +32,27 @@ public enum ItemCategory {
 
     static {
         categoryColors = new HashMap<>();
-        categoryColors.put(EQUIPMENT, Color.rgb(255, 170, 0));
-        categoryColors.put(JEWELLERY, Color.rgb(255, 170, 0));
+        var goldenColor = Color.rgb(255, 170, 0);
+        var generalColor = Color.rgb(57, 57, 56);
+        var purpleColor = Color.rgb(97, 30, 144);
+        categoryColors.put(EQUIPMENT, goldenColor);
+        categoryColors.put(JEWELLERY, goldenColor);
         categoryColors.put(UNIQUE, Color.rgb(125, 47, 17));
         categoryColors.put(SKILL_GEM, Color.rgb(25, 110, 75));
-        categoryColors.put(FOSSIL, Color.rgb(252, 96, 2));
-        categoryColors.put(BEAST,  Color.rgb(255, 170, 0));
-        categoryColors.put(PROPHECY, Color.rgb(97, 30, 144));
-        categoryColors.put(MAP, Color.rgb(57, 57, 56));
-        categoryColors.put(BREACHSTONE, Color.rgb(57, 57, 56));
-        categoryColors.put(JEWEL,  Color.rgb(255, 170, 0));
+        categoryColors.put(CRAFTING_SUPPLY, Color.rgb(252, 96, 2));
+        categoryColors.put(BEAST, goldenColor);
+        categoryColors.put(PROPHECY, purpleColor);
+        categoryColors.put(MAP, generalColor);
+        categoryColors.put(BREACHSTONE, generalColor);
+        categoryColors.put(JEWEL, goldenColor);
         categoryColors.put(ABYSSAL_JEWEL, Color.rgb(82, 163, 76));
-        categoryColors.put(CLUSTER_JEWEL, Color.rgb(97, 30, 144));
-        categoryColors.put(FLASK, Color.rgb(57, 57, 56));
-        categoryColors.put(SCARAB, Color.rgb(97, 30, 144));
-        categoryColors.put(MAP_FRAGMENT, Color.rgb(97, 30, 144));
-        categoryColors.put(LEGION_EMBLEM, Color.rgb(57, 57, 56));
+        categoryColors.put(CLUSTER_JEWEL, purpleColor);
+        categoryColors.put(FLASK, generalColor);
+        categoryColors.put(SCARAB, purpleColor);
+        categoryColors.put(MAP_FRAGMENT, purpleColor);
+        categoryColors.put(LEGION_EMBLEM, generalColor);
         categoryColors.put(DIVINATION_CARD, Color.rgb(0,17,73));
+//        categoryColors.put(ESSENCE, Color.rgb(16,195,249));
         categoryColors.put(OTHER, DEFAULT_COLOR);
     }
 

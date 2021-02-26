@@ -31,7 +31,8 @@ public class ShopSaleListCell extends ListCell<ShopSale> {
         VBox.setMargin(dateLabel, nodeInsets);
 
         var item = sale.getItem();
-        var itemNameText = new Text(String.format("%dx %s", item.getAmount(), item.getName()));
+        var amount = item.getAmount();
+        var itemNameText = new Text(amount > 1 ? String.format("%dx %s", amount, item.getName()) : item.getName());
         VBox.setMargin(itemNameText, nodeInsets);
 
         var categoryParent = new HBox();

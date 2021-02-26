@@ -17,7 +17,7 @@ public class ItemCategoryToNameMapper implements BiFunction<String, ItemCategory
 
             case UNIQUE:
             case PROPHECY:
-            case FOSSIL:
+            case CRAFTING_SUPPLY:
             case SCARAB:
             case BREACHSTONE:
             case LEGION_EMBLEM:

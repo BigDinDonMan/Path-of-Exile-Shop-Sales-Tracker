@@ -58,7 +58,7 @@ public class LogFileLoader {
         ItemCategory category = ItemCategory.valueOf(parts[1].toUpperCase().strip().replace(' ', '_').replace("SUPPORT", "SKILL"));
         String name = parts[0];
         int amount = 1;
-        if (parts[0].matches("\\d+x")) {
+        if (parts[0].matches("\\d+x.*")) {
             var amountStr = parts[0].
                     chars().
                     takeWhile(c -> c != 'x').

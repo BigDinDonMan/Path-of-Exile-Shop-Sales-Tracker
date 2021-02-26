@@ -1,3 +1,5 @@
+import org.apache.maven.shared.utils.StringUtils;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -58,14 +60,23 @@ public class LogFileLoader {
         ItemCategory category = ItemCategory.valueOf(parts[1].toUpperCase().strip().replace(' ', '_').replace("SUPPORT", "SKILL"));
         String name = parts[0];
         int amount = 1;
-        if (parts[0].matches("\\d+x.*")) {
+        if (parts[0].matches("\\-\\s*\\d+x.*")) {
             var amountStr = parts[0].
                     chars().
+                    dropWhile(c -> c == '-' || Character.isWhitespace(c)).
                     takeWhile(c -> c != 'x').
-                    mapToObj(c -> Character.toString((char) c)).
+                    mapToObj(Character::toString).
                     collect(Collectors.joining(""));
             amount = Integer.parseInt(amountStr);
-            name = parts[0].substring(amountStr.length() + 2).strip();
+            name = parts[0].
+                    chars().
+                    dropWhile(c -> c != 'x').
+                    skip(1).
+                    mapToObj(Character::toString).
+                    collect(Collectors.joining("")).
+                    strip();
+        } else {
+            name = parts[0].substring(1).strip();
         }
         List<ReceivedCurrency> currencies = new ArrayList<>();
         String[] currencyInfo = parts[2].strip().split(" ");

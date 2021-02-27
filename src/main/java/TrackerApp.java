@@ -11,7 +11,7 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
-//todo: add application icon
+//todo: add splash screen
 public class TrackerApp extends javafx.application.Application {
     @Override
     public void start(Stage stage) throws Exception {

@@ -33,16 +33,16 @@
                   </MenuItem>
                   <MenuItem mnemonicParsing="false" onAction="#loadLogFiles" text="Load log files">
                      <accelerator>
-                        <KeyCodeCombination alt="UP" code="O" control="DOWN" meta="UP" shift="UP" shortcut="UP"/>
+                        <KeyCodeCombination alt="UP" code="O" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                      </accelerator>
                   </MenuItem>
                </items>
           </Menu>
            <Menu mnemonicParsing="false" text="Edit">
               <items>
-                 <MenuItem mnemonicParsing="false" text="Undo recent sale addition" onAction="#undoRecentSale">
+                 <MenuItem mnemonicParsing="false" onAction="#undoRecentSale" text="Undo recent sale addition">
                     <accelerator>
-                       <KeyCodeCombination alt="UP" code="Z" control="DOWN" meta="UP" shift="UP" shortcut="UP"/>
+                       <KeyCodeCombination alt="UP" code="Z" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                     </accelerator>
                  </MenuItem>
               </items>
@@ -54,149 +54,154 @@
           </Menu>
         </menus>
       </MenuBar>
-      <ScrollPane fitToHeight="true" fitToWidth="true" layoutX="546.0" layoutY="63.0" prefHeight="601.0" prefWidth="405.0" AnchorPane.bottomAnchor="12.0" AnchorPane.rightAnchor="12.0" AnchorPane.topAnchor="63.0">
-         <content>
-            <AnchorPane prefHeight="541.0" prefWidth="346.0" style="-fx-border-color: lightgray;">
-               <children>
-                  <ListView fx:id="currenciesListView" layoutX="20.0" layoutY="333.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0" />
-                  <Label layoutX="17.0" layoutY="308.0" text="Currencies" />
-                  <Button alignment="BOTTOM_CENTER" contentDisplay="CENTER" layoutX="142.0" layoutY="554.0" mnemonicParsing="false" onAction="#addNewShopSale" prefHeight="31.0" prefWidth="140.0" text="Add new sale" AnchorPane.leftAnchor="140.0" AnchorPane.rightAnchor="140.0">
-                     <styleClass>
-                        <String fx:value="btn" />
-                        <String fx:value="btn-primary" />
-                     </styleClass>
-                  </Button>
-                  <GridPane layoutX="17.0" layoutY="17.0" prefHeight="190.0" prefWidth="371.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="16.0">
-                    <columnConstraints>
-                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                    </columnConstraints>
-                    <rowConstraints>
-                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                    </rowConstraints>
+      <AnchorPane layoutX="14.0" layoutY="5.0" AnchorPane.bottomAnchor="12.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0">
+         <children>
+            <ScrollPane fitToHeight="true" fitToWidth="true" layoutX="569.0" layoutY="58.0" prefHeight="601.0" prefWidth="405.0">
+               <content>
+                  <AnchorPane prefHeight="541.0" prefWidth="346.0" style="-fx-border-color: lightgray;">
                      <children>
-                        <VBox>
-                           <children>
-                              <Label text="Item name">
-                                 <VBox.margin>
-                                    <Insets left="15.0" />
-                                 </VBox.margin>
-                              </Label>
-                              <TextField fx:id="itemNameTextField" maxWidth="1.7976931348623157E308" prefHeight="31.0" prefWidth="168.0">
-                                 <VBox.margin>
-                                    <Insets left="15.0" right="5.0" />
-                                 </VBox.margin>
-                              </TextField>
-                           </children>
-                        </VBox>
-                        <VBox GridPane.rowIndex="1">
-                           <children>
-                              <Label text="Item amount">
-                                 <VBox.margin>
-                                    <Insets left="15.0" />
-                                 </VBox.margin>
-                              </Label>
-                              <TextField fx:id="itemAmountTextField" maxWidth="1.7976931348623157E308" prefHeight="31.0" prefWidth="169.0">
-                                 <VBox.margin>
-                                    <Insets left="15.0" right="5.0" />
-                                 </VBox.margin>
-                              </TextField>
-                           </children>
-                        </VBox>
-                        <VBox GridPane.columnIndex="1" GridPane.rowIndex="1">
-                           <children>
-                              <Label text="Sale date">
-                                 <VBox.margin>
-                                    <Insets left="5.0" />
-                                 </VBox.margin>
-                              </Label>
-                              <DatePicker fx:id="saleDatePicker" maxWidth="1.7976931348623157E308" prefHeight="31.0" prefWidth="196.0">
-                                 <VBox.margin>
-                                    <Insets left="5.0" right="15.0" />
-                                 </VBox.margin>
-                              </DatePicker>
-                           </children>
-                        </VBox>
-                        <VBox GridPane.columnIndex="1">
-                           <children>
-                              <Label text="Item category">
-                                 <VBox.margin>
-                                    <Insets left="5.0" />
-                                 </VBox.margin>
-                              </Label>
-                              <ComboBox fx:id="itemCategoryComboBox" maxWidth="1.7976931348623157E308" prefHeight="31.0" prefWidth="194.0">
-                                 <VBox.margin>
-                                    <Insets left="5.0" right="15.0" />
-                                 </VBox.margin>
-                              </ComboBox>
-                           </children>
-                        </VBox>
-                        <VBox GridPane.rowIndex="2">
-                           <children>
-                              <Label text="Currency">
-                                 <VBox.margin>
-                                    <Insets left="15.0" />
-                                 </VBox.margin>
-                              </Label>
-                              <ComboBox fx:id="currencyComboBox" maxWidth="1.7976931348623157E308" prefHeight="31.0" prefWidth="168.0">
-                                 <VBox.margin>
-                                    <Insets left="15.0" right="5.0" />
-                                 </VBox.margin>
-                              </ComboBox>
-                           </children>
-                        </VBox>
-                        <VBox GridPane.columnIndex="1" GridPane.rowIndex="2">
-                           <children>
-                              <Label text="Currency amount">
-                                 <VBox.margin>
-                                    <Insets left="5.0" />
-                                 </VBox.margin>
-                              </Label>
-                              <TextField fx:id="currencyAmountTextField" maxWidth="1.7976931348623157E308" prefHeight="31.0" prefWidth="194.0">
-                                 <VBox.margin>
-                                    <Insets left="5.0" right="15.0" />
-                                 </VBox.margin>
-                              </TextField>
-                           </children>
-                        </VBox>
-                     </children>
-                  </GridPane>
-                  <HBox alignment="CENTER" layoutX="16.0" layoutY="205.0" prefHeight="100.0" prefWidth="200.0" AnchorPane.leftAnchor="16.0" AnchorPane.rightAnchor="15.0">
-                     <children>
-                        <Button alignment="CENTER" mnemonicParsing="false" onAction="#addNewCurrency" text="Add currency">
-                           <HBox.margin>
-                              <Insets right="25.0" />
-                           </HBox.margin>
+                        <ListView fx:id="currenciesListView" layoutX="20.0" layoutY="333.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0" />
+                        <Label layoutX="17.0" layoutY="308.0" text="Currencies" />
+                        <Button alignment="BOTTOM_CENTER" contentDisplay="CENTER" layoutX="142.0" layoutY="554.0" mnemonicParsing="false" onAction="#addNewShopSale" prefHeight="31.0" prefWidth="140.0" text="Add new sale" AnchorPane.leftAnchor="140.0" AnchorPane.rightAnchor="140.0">
                            <styleClass>
                               <String fx:value="btn" />
                               <String fx:value="btn-primary" />
                            </styleClass>
                         </Button>
-                        <Button mnemonicParsing="false" onAction="#clearCurrencies" text="Clear currencies">
-                           <HBox.margin>
-                              <Insets left="25.0" />
-                           </HBox.margin>
-                           <styleClass>
-                              <String fx:value="btn" />
-                              <String fx:value="btn-primary" />
-                           </styleClass>
-                        </Button>
+                        <GridPane layoutX="17.0" layoutY="17.0" prefHeight="190.0" prefWidth="371.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="16.0">
+                          <columnConstraints>
+                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                          </columnConstraints>
+                          <rowConstraints>
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                          </rowConstraints>
+                           <children>
+                              <VBox>
+                                 <children>
+                                    <Label text="Item name">
+                                       <VBox.margin>
+                                          <Insets left="15.0" />
+                                       </VBox.margin>
+                                    </Label>
+                                    <TextField fx:id="itemNameTextField" maxWidth="1.7976931348623157E308" prefHeight="31.0" prefWidth="168.0">
+                                       <VBox.margin>
+                                          <Insets left="15.0" right="5.0" />
+                                       </VBox.margin>
+                                    </TextField>
+                                 </children>
+                              </VBox>
+                              <VBox GridPane.rowIndex="1">
+                                 <children>
+                                    <Label text="Item amount">
+                                       <VBox.margin>
+                                          <Insets left="15.0" />
+                                       </VBox.margin>
+                                    </Label>
+                                    <TextField fx:id="itemAmountTextField" maxWidth="1.7976931348623157E308" prefHeight="31.0" prefWidth="169.0">
+                                       <VBox.margin>
+                                          <Insets left="15.0" right="5.0" />
+                                       </VBox.margin>
+                                    </TextField>
+                                 </children>
+                              </VBox>
+                              <VBox GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                 <children>
+                                    <Label text="Sale date">
+                                       <VBox.margin>
+                                          <Insets left="5.0" />
+                                       </VBox.margin>
+                                    </Label>
+                                    <DatePicker fx:id="saleDatePicker" maxWidth="1.7976931348623157E308" prefHeight="31.0" prefWidth="196.0">
+                                       <VBox.margin>
+                                          <Insets left="5.0" right="15.0" />
+                                       </VBox.margin>
+                                    </DatePicker>
+                                 </children>
+                              </VBox>
+                              <VBox GridPane.columnIndex="1">
+                                 <children>
+                                    <Label text="Item category">
+                                       <VBox.margin>
+                                          <Insets left="5.0" />
+                                       </VBox.margin>
+                                    </Label>
+                                    <ComboBox fx:id="itemCategoryComboBox" maxWidth="1.7976931348623157E308" prefHeight="31.0" prefWidth="194.0">
+                                       <VBox.margin>
+                                          <Insets left="5.0" right="15.0" />
+                                       </VBox.margin>
+                                    </ComboBox>
+                                 </children>
+                              </VBox>
+                              <VBox GridPane.rowIndex="2">
+                                 <children>
+                                    <Label text="Currency">
+                                       <VBox.margin>
+                                          <Insets left="15.0" />
+                                       </VBox.margin>
+                                    </Label>
+                                    <ComboBox fx:id="currencyComboBox" maxWidth="1.7976931348623157E308" prefHeight="31.0" prefWidth="168.0">
+                                       <VBox.margin>
+                                          <Insets left="15.0" right="5.0" />
+                                       </VBox.margin>
+                                    </ComboBox>
+                                 </children>
+                              </VBox>
+                              <VBox GridPane.columnIndex="1" GridPane.rowIndex="2">
+                                 <children>
+                                    <Label text="Currency amount">
+                                       <VBox.margin>
+                                          <Insets left="5.0" />
+                                       </VBox.margin>
+                                    </Label>
+                                    <TextField fx:id="currencyAmountTextField" maxWidth="1.7976931348623157E308" prefHeight="31.0" prefWidth="194.0">
+                                       <VBox.margin>
+                                          <Insets left="5.0" right="15.0" />
+                                       </VBox.margin>
+                                    </TextField>
+                                 </children>
+                              </VBox>
+                           </children>
+                        </GridPane>
+                        <HBox alignment="CENTER" layoutX="16.0" layoutY="205.0" prefHeight="100.0" prefWidth="200.0" AnchorPane.leftAnchor="16.0" AnchorPane.rightAnchor="15.0">
+                           <children>
+                              <Button alignment="CENTER" mnemonicParsing="false" onAction="#addNewCurrency" text="Add currency">
+                                 <HBox.margin>
+                                    <Insets right="25.0" />
+                                 </HBox.margin>
+                                 <styleClass>
+                                    <String fx:value="btn" />
+                                    <String fx:value="btn-primary" />
+                                 </styleClass>
+                              </Button>
+                              <Button mnemonicParsing="false" onAction="#clearCurrencies" text="Clear currencies">
+                                 <HBox.margin>
+                                    <Insets left="25.0" />
+                                 </HBox.margin>
+                                 <styleClass>
+                                    <String fx:value="btn" />
+                                    <String fx:value="btn-primary" />
+                                 </styleClass>
+                              </Button>
+                           </children>
+                        </HBox>
                      </children>
-                  </HBox>
-               </children>
-            </AnchorPane>
-         </content>
-      </ScrollPane>
-      <ListView fx:id="shopSalesListView" layoutX="14.0" layoutY="91.0" prefHeight="571.0" prefWidth="432.0" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="91.0" />
-      <Label fx:id="statusLabel" layoutX="960.0" layoutY="5.0" textAlignment="RIGHT" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0" />
-      <ComboBox fx:id="dateFilterComboBox" layoutX="14.0" layoutY="51.0" prefHeight="31.0" prefWidth="129.0" promptText="Select date" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="51.0" />
-      <Button fx:id="clearFiltersButton" layoutX="350.0" layoutY="51.0" mnemonicParsing="false" onAction="#clearFilters" prefHeight="31.0" prefWidth="96.0" text="Clear filters">
-         <styleClass>
-            <String fx:value="btn" />
-            <String fx:value="btn-primary" />
-         </styleClass></Button>
-      <ComboBox fx:id="categoryFilterComboBox" layoutX="166.0" layoutY="51.0" prefHeight="31.0" prefWidth="161.0" promptText="Select category" />
+                  </AnchorPane>
+               </content>
+            </ScrollPane>
+            <ListView fx:id="shopSalesListView" layoutY="86.0" prefHeight="571.0" prefWidth="432.0" />
+            <Label fx:id="statusLabel" layoutX="981.0" textAlignment="RIGHT" />
+            <ComboBox fx:id="dateFilterComboBox" layoutY="46.0" prefHeight="31.0" prefWidth="129.0" promptText="Select date" />
+            <Button fx:id="clearFiltersButton" layoutX="336.0" layoutY="46.0" mnemonicParsing="false" onAction="#clearFilters" prefHeight="31.0" prefWidth="96.0" text="Clear filters">
+               <styleClass>
+                  <String fx:value="btn" />
+                  <String fx:value="btn-primary" />
+               </styleClass>
+            </Button>
+            <ComboBox fx:id="categoryFilterComboBox" layoutX="152.0" layoutY="46.0" prefHeight="31.0" prefWidth="161.0" promptText="Select category" />
+         </children>
+      </AnchorPane>
    </children>
 </AnchorPane>

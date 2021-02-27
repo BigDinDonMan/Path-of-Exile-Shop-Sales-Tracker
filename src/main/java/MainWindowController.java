@@ -338,7 +338,12 @@ public class MainWindowController implements Initializable {
         if (recentlyAddedSalesList.isEmpty()) {
             return;
         }
-        Service<Boolean> saveService = createSaveService();
+        Service<Boolean> saveService = new ScheduledService<Boolean>() {
+            @Override
+            protected Task<Boolean> createTask() {
+                return new SaveSalesToDbTask(recentlyAddedSalesList);
+            }
+        };
         ProgressDialog progressDialog = new ProgressDialog(saveService);
         saveService.setOnSucceeded(e -> {
             saveService.cancel();
@@ -365,15 +370,6 @@ public class MainWindowController implements Initializable {
 
         saveService.start();
         progressDialog.showAndWait();
-    }
-
-    private Service<Boolean> createSaveService() {
-        return new ScheduledService<Boolean>() {
-            @Override
-            protected Task<Boolean> createTask() {
-                return new SaveSalesToDbTask(recentlyAddedSalesList);
-            }
-        };
     }
 
     private void clearMandatoryInputs() {

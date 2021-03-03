@@ -24,7 +24,7 @@ public enum ItemCategory {
     INCUBATOR,
     CRAFTING_SUPPLY,
     WATCHSTONE,
-//    ESSENCE,
+    CRAFTING_BASE,
     OTHER;
 
     private static Map<ItemCategory, Color> categoryColors;

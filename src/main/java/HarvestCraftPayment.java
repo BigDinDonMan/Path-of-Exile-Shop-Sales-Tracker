@@ -1,3 +1,4 @@
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
@@ -6,6 +7,7 @@ import javax.persistence.*;
 @Entity
 @Table(name = "harvest_craft_payments")
 @NoArgsConstructor
+@Getter
 public class HarvestCraftPayment {
 
     @Id

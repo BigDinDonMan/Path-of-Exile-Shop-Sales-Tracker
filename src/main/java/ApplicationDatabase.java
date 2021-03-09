@@ -36,7 +36,9 @@ public class ApplicationDatabase {
         var annotatedClasses = Arrays.asList(
                 ShopSale.class,
                 ReceivedCurrency.class,
-                SoldItem.class
+                SoldItem.class,
+                HarvestCraft.class,
+                HarvestCraftPayment.class
         );
         annotatedClasses.forEach(dbConfig::addAnnotatedClass);
         var registry = new StandardServiceRegistryBuilder().applySettings(dbConfig.getProperties()).build();

@@ -4,12 +4,8 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
-import org.hibernate.query.Query;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
 import javax.persistence.criteria.*;
-import javax.transaction.Transactional;
 import java.io.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -37,8 +33,8 @@ public class ApplicationDatabase {
                 ShopSale.class,
                 ReceivedCurrency.class,
                 SoldItem.class,
-                HarvestCraft.class,
-                HarvestCraftPayment.class
+                PoEService.class,
+                PoeServicePayment.class
         );
         annotatedClasses.forEach(dbConfig::addAnnotatedClass);
         var registry = new StandardServiceRegistryBuilder().applySettings(dbConfig.getProperties()).build();

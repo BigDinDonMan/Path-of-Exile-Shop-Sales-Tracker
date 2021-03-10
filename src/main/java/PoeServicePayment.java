@@ -5,10 +5,10 @@ import lombok.Setter;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "harvest_craft_payments")
+@Table(name = "poe_services_payments")
 @NoArgsConstructor
 @Getter
-public class HarvestCraftPayment {
+public class PoeServicePayment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,10 +23,10 @@ public class HarvestCraftPayment {
 
     @Setter
     @ManyToOne
-    @JoinColumn(name = "craft_id", nullable = false)
-    private HarvestCraft craft;
+    @JoinColumn(name = "service_id", nullable = false)
+    private PoEService service;
 
-    public HarvestCraftPayment(String currencyName, int amount) {
+    public PoeServicePayment(String currencyName, int amount) {
         this.currencyName = currencyName;
         this.amount = amount;
     }

@@ -25,7 +25,7 @@ public class TrackerApp extends javafx.application.Application {
         stage.setMinHeight(350);
         stage.setMinWidth(450);
         stage.setScene(s);
-        stage.setTitle("Path of Exile Shop Sales Tracker");
+        stage.setTitle("Path of Exile Data Tracker");
         stage.getIcons().add(new javafx.scene.image.Image(getClass().getResource("images/app-icon.png").toExternalForm()));
 //        setUpSystemTrayIfSupported(stage);
         stage.setOnCloseRequest(e -> {

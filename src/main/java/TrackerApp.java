@@ -12,6 +12,8 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 
 //todo: add splash screen
+//todo: add navigation to wiki on ctrl+clicking unique items or skill gems
+//todo: add form for levelled gems and harvest crafts
 public class TrackerApp extends javafx.application.Application {
     @Override
     public void start(Stage stage) throws Exception {
@@ -23,7 +25,7 @@ public class TrackerApp extends javafx.application.Application {
         stage.setMinHeight(350);
         stage.setMinWidth(450);
         stage.setScene(s);
-        stage.setTitle("Path of Exile Shop Sales Tracker");
+        stage.setTitle("Path of Exile Data Tracker");
         stage.getIcons().add(new javafx.scene.image.Image(getClass().getResource("images/app-icon.png").toExternalForm()));
 //        setUpSystemTrayIfSupported(stage);
         stage.setOnCloseRequest(e -> {

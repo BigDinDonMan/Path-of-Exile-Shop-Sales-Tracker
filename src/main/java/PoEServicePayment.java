@@ -8,7 +8,7 @@ import javax.persistence.*;
 @Table(name = "poe_services_payments")
 @NoArgsConstructor
 @Getter
-public class PoeServicePayment {
+public class PoEServicePayment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,7 +26,7 @@ public class PoeServicePayment {
     @JoinColumn(name = "service_id", nullable = false)
     private PoEService service;
 
-    public PoeServicePayment(String currencyName, int amount) {
+    public PoEServicePayment(String currencyName, int amount) {
         this.currencyName = currencyName;
         this.amount = amount;
     }

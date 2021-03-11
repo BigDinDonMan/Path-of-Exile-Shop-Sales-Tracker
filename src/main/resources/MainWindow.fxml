@@ -219,8 +219,18 @@
                   </AnchorPane>
                </content>
             </Tab>
-            <Tab closable="false" text="Services"></Tab>
-            <Tab closable="false" text="Levelled gems"></Tab>
+            <Tab closable="false" text="Services">
+               <content>
+                  <AnchorPane prefHeight="200.0" prefWidth="200.0">
+                     <children>
+                        <ListView layoutX="14.0" layoutY="72.0" prefHeight="553.0" prefWidth="329.0" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="72.0" />
+                     </children>
+                  </AnchorPane>
+               </content></Tab>
+            <Tab closable="false" text="Levelled gems">
+               <content>
+                  <AnchorPane prefHeight="200.0" prefWidth="200.0" />
+               </content></Tab>
          </tabs>
       </TabPane>
    </children>

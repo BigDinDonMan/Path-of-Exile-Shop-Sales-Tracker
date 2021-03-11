@@ -1,6 +1,7 @@
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import org.apache.maven.shared.utils.StringUtils;
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -27,18 +28,23 @@ public class LevelledSkillGem {
     @Enumerated(value = EnumType.STRING)
     private GemQualityType qualityType;
 
+    @Column(name = "gem_type")
+    @Enumerated(value = EnumType.STRING)
+    private GemType gemType;
+
     @Column
     private boolean corrupted;
 
     @Override
     public boolean equals(Object o) {
         if (o instanceof LevelledSkillGem) {
-            LevelledSkillGem g = (LevelledSkillGem)o;
+            var g = (LevelledSkillGem)o;
             return this.corrupted == g.corrupted &&
                     this.gemName.equals(g.gemName) &&
                     this.maxLevel == g.maxLevel &&
                     this.quality == g.quality &&
-                    this.qualityType.equals(g.qualityType);
+                    this.qualityType.equals(g.qualityType) &&
+                    this.gemType.equals(g.gemType);
         }
         return false;
     }
@@ -50,12 +56,24 @@ public class LevelledSkillGem {
                 this.maxLevel,
                 this.quality,
                 this.qualityType,
-                this.corrupted
+                this.corrupted,
+                this.gemType
         );
     }
 
     @Override
     public String toString() {
-        return "";
+        var sb = new StringBuilder();
+        if (this.quality > 0 && !this.qualityType.equals(GemQualityType.SUPERIOR)) {
+            sb.append(this.qualityType.prettyName()).append(' ');
+        }
+        sb.append(this.gemName).append('\n');
+        sb.append(StringUtils.capitalise(this.gemType.name().toLowerCase())).append('\n');
+        sb.append("Level: ").append(this.maxLevel).append('\n');
+        sb.append("Quality: ").append(this.quality).append('%').append('\n');
+        if (this.corrupted) {
+            sb.append("Corrupted").append('\n');
+        }
+        return sb.toString();
     }
 }

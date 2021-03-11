@@ -2,6 +2,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 @Entity
@@ -26,5 +29,17 @@ public class PoEService {
     private PoEServiceType serviceType;
 
     @OneToMany(mappedBy = "service", fetch = FetchType.EAGER)
-    private List<PoeServicePayment> payments;
+    private List<PoEServicePayment> payments;
+
+    public PoEService(String name, int count, PoEServiceType type) {
+        this.serviceName = name;
+        this.countPerformed = count;
+        this.serviceType = type;
+        this.payments = Collections.emptyList();
+    }
+
+    public PoEService(String name, int count, PoEServiceType type, Collection<? extends PoEServicePayment> payments) {
+        this(name, count, type);
+        this.payments = new ArrayList<>(payments);
+    }
 }

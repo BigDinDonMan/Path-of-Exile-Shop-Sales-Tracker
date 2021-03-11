@@ -34,7 +34,7 @@ public class ApplicationDatabase {
                 ReceivedCurrency.class,
                 SoldItem.class,
                 PoEService.class,
-                PoeServicePayment.class
+                PoEServicePayment.class
         );
         annotatedClasses.forEach(dbConfig::addAnnotatedClass);
         var registry = new StandardServiceRegistryBuilder().applySettings(dbConfig.getProperties()).build();

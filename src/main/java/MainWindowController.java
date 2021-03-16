@@ -15,6 +15,8 @@ import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import org.controlsfx.dialog.ProgressDialog;
@@ -43,13 +45,22 @@ public class MainWindowController implements Initializable {
     private AnchorPane root;
 
     @FXML
+    private HBox serviceCategoryTogglesParent;
+
+    @FXML
     private Label statusLabel;
 
     @FXML
     private ListView<ShopSale> shopSalesListView;
 
     @FXML
+    private ListView<PoEService> servicesListView;
+
+    @FXML
     private ListView<ReceivedCurrency> currenciesListView;
+
+    @FXML
+    private ListView<PoEServicePayment> paymentsListView;
 
     @FXML
     private TextField itemNameTextField;
@@ -67,6 +78,12 @@ public class MainWindowController implements Initializable {
     private ComboBox<String> currencyComboBox;
 
     @FXML
+    private ComboBox<String> paymentsComboBox;
+
+    @FXML
+    private TextField paymentAmountTextField;
+
+    @FXML
     private TextField currencyAmountTextField;
 
     @FXML
@@ -78,6 +95,8 @@ public class MainWindowController implements Initializable {
     @FXML
     private Button clearFiltersButton;
 
+    private ToggleGroup serviceTypeToggleGroup;
+
     private ContextMenu itemNamesAutoCompleteMenu;
     private List<MenuItem> autoCompleteData;
     private BiFunction<String, ItemCategory, String> nameMapper;
@@ -85,6 +104,8 @@ public class MainWindowController implements Initializable {
     private FilteredList<ShopSale> filteredSaleList;
 
     private List<ShopSale> recentlyAddedSalesList;
+    private List<PoEService> recentlyAddedServicesList;
+    private List<LevelledSkillGem> recentlyAddedGemsList;
 
     private BooleanProperty unsavedChangesPresent;
 
@@ -94,6 +115,8 @@ public class MainWindowController implements Initializable {
         clearingFilters = new AtomicBoolean(false);
         unsavedChangesPresent = new SimpleBooleanProperty();
         recentlyAddedSalesList = new ArrayList<>();
+        recentlyAddedGemsList = new ArrayList<>();
+        recentlyAddedServicesList = new ArrayList<>();
     }
 
     @Override
@@ -106,6 +129,7 @@ public class MainWindowController implements Initializable {
         setUpListViewAndAutoCompleter();
         setUpNewSaleForm();
         setUpSaleFilters();
+        setUpCategoryToggleButtons();
     }
 
     //<editor-fold desc="setup methods">
@@ -297,6 +321,21 @@ public class MainWindowController implements Initializable {
     }
 
     @FXML
+    private void addNewPayment() {
+
+    }
+
+    @FXML
+    private void addNewService() {
+
+    }
+
+    @FXML
+    private void addNewGem() {
+
+    }
+
+    @FXML
     private void addNewShopSale() {
         String itemName = itemNameTextField.getText().strip();
         if (itemName == null || itemName.isBlank()) {
@@ -412,6 +451,11 @@ public class MainWindowController implements Initializable {
         currenciesListView.getItems().clear();
     }
 
+    @FXML
+    private void clearPayments() {
+        paymentsListView.getItems().clear();
+    }
+
     public void shutdown() {
         if (!recentlyAddedSalesList.isEmpty()) {
             Alert a = new Alert(Alert.AlertType.CONFIRMATION, "You still have unsaved changes! Save now?");
@@ -463,6 +507,20 @@ public class MainWindowController implements Initializable {
         shopSalesListView.getItems().remove(toDelete);
         if (recentlyAddedSalesList.isEmpty()) {
             unsavedChangesPresent.setValue(false);
+        }
+    }
+
+    private void setUpCategoryToggleButtons() {
+        serviceTypeToggleGroup = new ToggleGroup();
+        for (var category : PoEServiceType.values()) {
+            var button = new CategoryToggleButton(category);
+//            button.setGraphic();//todo: add category image here
+            button.setText(category.name());
+            button.setMaxHeight(Double.MAX_VALUE);
+            button.setMaxWidth(Double.MAX_VALUE);
+            HBox.setHgrow(button, Priority.ALWAYS);
+            serviceTypeToggleGroup.getToggles().add(button);
+            serviceCategoryTogglesParent.getChildren().add(button);
         }
     }
 }

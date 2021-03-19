@@ -1,17 +1,14 @@
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.collections.FXCollections;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.concurrent.ScheduledService;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Side;
-import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
@@ -20,18 +17,12 @@ import javafx.scene.layout.Priority;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import org.controlsfx.dialog.ProgressDialog;
-import org.hibernate.Session;
-import org.hibernate.Transaction;
 
 import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
 import java.util.*;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
@@ -48,6 +39,9 @@ public class MainWindowController implements Initializable {
     private HBox serviceCategoryTogglesParent;
 
     @FXML
+    private TabPane formsTabPane;
+
+    @FXML
     private Label statusLabel;
 
     @FXML
@@ -55,6 +49,9 @@ public class MainWindowController implements Initializable {
 
     @FXML
     private ListView<PoEService> servicesListView;
+
+    @FXML
+    private ListView<LevelledSkillGem> gemsListView;
 
     @FXML
     private ListView<ReceivedCurrency> currenciesListView;
@@ -124,6 +121,10 @@ public class MainWindowController implements Initializable {
         GlobalData.initialize();
         unsavedChangesPresent.addListener((observable, oldValue, newValue) -> {
             Platform.runLater(() -> statusLabel.setText(newValue ? "Unsaved changes!" : ""));
+        });
+
+        formsTabPane.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+
         });
 
         setUpListViewAndAutoCompleter();
@@ -380,7 +381,7 @@ public class MainWindowController implements Initializable {
         Service<Boolean> saveService = new ScheduledService<Boolean>() {
             @Override
             protected Task<Boolean> createTask() {
-                return new SaveSalesToDbTask(recentlyAddedSalesList);
+                return new SaveDataToDatabaseTask(recentlyAddedSalesList);
             }
         };
         ProgressDialog progressDialog = new ProgressDialog(saveService);

@@ -60,7 +60,7 @@
             <Label fx:id="statusLabel" layoutX="996.0" layoutY="5.0" textAlignment="RIGHT" />
          </children>
       </AnchorPane>
-      <TabPane layoutX="6.0" layoutY="32.0" prefHeight="390.0" prefWidth="987.0" style="-fx-border-color: lightgray;" tabClosingPolicy="UNAVAILABLE" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0">
+      <TabPane fx:id="formsTabPane" layoutX="6.0" layoutY="32.0" prefHeight="390.0" prefWidth="987.0" style="-fx-border-color: lightgray;" tabClosingPolicy="UNAVAILABLE" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0">
          <tabs>
             <Tab text="Sales">
                <content>

@@ -30,6 +30,7 @@ import java.util.stream.Collectors;
 //todo: add undo to adding last shop sale
 //todo: add progress bar/progress window when saving records to database
 //todo: add item category icons in combobox
+//todo: change 2 tabpanes into a single one
 public class MainWindowController implements Initializable {
 
     @FXML
@@ -66,7 +67,16 @@ public class MainWindowController implements Initializable {
     private TextField itemAmountTextField;
 
     @FXML
+    private TextField serviceNameTextField;
+
+    @FXML
+    private TextField timesPerformedTextField;
+
+    @FXML
     private DatePicker saleDatePicker;
+
+    @FXML
+    private DatePicker serviceDatePicker;
 
     @FXML
     private ComboBox<ItemCategory> itemCategoryComboBox;
@@ -104,6 +114,9 @@ public class MainWindowController implements Initializable {
     private List<PoEService> recentlyAddedServicesList;
     private List<LevelledSkillGem> recentlyAddedGemsList;
 
+    private List<? extends Object> currentUndoList;
+    private List<? extends Object> currentRedoList;
+
     private BooleanProperty unsavedChangesPresent;
 
     private AtomicBoolean clearingFilters;
@@ -114,6 +127,8 @@ public class MainWindowController implements Initializable {
         recentlyAddedSalesList = new ArrayList<>();
         recentlyAddedGemsList = new ArrayList<>();
         recentlyAddedServicesList = new ArrayList<>();
+        currentUndoList = recentlyAddedSalesList;
+        currentRedoList = recentlyAddedSalesList;
     }
 
     @Override
@@ -124,7 +139,21 @@ public class MainWindowController implements Initializable {
         });
 
         formsTabPane.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-
+            if (oldValue != newValue) {
+                List<? extends Object> list = null;
+                switch (newValue.getText()) {
+                    case "Gems":
+                        list = recentlyAddedGemsList;
+                        break;
+                    case "Services":
+                        list = recentlyAddedServicesList;
+                        break;
+                    case "Sales":
+                        list = recentlyAddedSalesList;
+                        break;
+                }
+                currentRedoList = currentUndoList = list;
+            }
         });
 
         setUpListViewAndAutoCompleter();
@@ -323,7 +352,11 @@ public class MainWindowController implements Initializable {
 
     @FXML
     private void addNewPayment() {
-
+        if (!paymentAmountTextField.getText().isBlank() || paymentsComboBox.getSelectionModel().getSelectedIndex() != -1) {
+            int amount = Integer.parseInt(paymentAmountTextField.getText());
+            String name = paymentsComboBox.getSelectionModel().getSelectedItem();
+            paymentsListView.getItems().add(new PoEServicePayment(name, amount));
+        }
     }
 
     @FXML
@@ -374,8 +407,8 @@ public class MainWindowController implements Initializable {
     }
 
     @FXML
-    private void saveShopSales() {
-        if (recentlyAddedSalesList.isEmpty()) {
+    private void saveDbData() {
+        if (recentlyAddedSalesList.isEmpty() && recentlyAddedServicesList.isEmpty() && recentlyAddedGemsList.isEmpty()) {
             return;
         }
         Service<Boolean> saveService = new ScheduledService<Boolean>() {
@@ -438,6 +471,14 @@ public class MainWindowController implements Initializable {
         }
     }
 
+    private void onGemAdded(LevelledSkillGem lsg) {
+
+    }
+
+    private void onServiceAdded(PoEService service) {
+
+    }
+
     @FXML
     private void clearFilters() {
         clearingFilters.set(true);
@@ -458,12 +499,12 @@ public class MainWindowController implements Initializable {
     }
 
     public void shutdown() {
-        if (!recentlyAddedSalesList.isEmpty()) {
+        if (!recentlyAddedSalesList.isEmpty() || !recentlyAddedGemsList.isEmpty() || !recentlyAddedServicesList.isEmpty()) {
             Alert a = new Alert(Alert.AlertType.CONFIRMATION, "You still have unsaved changes! Save now?");
             Optional<ButtonType> result = a.showAndWait();
             result.ifPresent(e -> {
                 if (e.equals(ButtonType.OK)) {
-                    saveShopSales();
+                    saveDbData();
                 }
             });
         }
@@ -493,14 +534,14 @@ public class MainWindowController implements Initializable {
                 if (!type.equals(ButtonType.OK)) return;
                 //if all is good then add everything to list or database
                 recentlyAddedSalesList.addAll(sales);
-                saveShopSales();
+                saveDbData();
             });
         }
     }
 
     @FXML
-    private void undoRecentSale() {
-        if (recentlyAddedSalesList.isEmpty()) {
+    private void undo() {
+        if (currentUndoList.isEmpty()) {
             return;
         }
         var toDelete = recentlyAddedSalesList.get(recentlyAddedSalesList.size() - 1);
@@ -509,6 +550,11 @@ public class MainWindowController implements Initializable {
         if (recentlyAddedSalesList.isEmpty()) {
             unsavedChangesPresent.setValue(false);
         }
+    }
+
+    @FXML
+    private void redo() {
+
     }
 
     private void setUpCategoryToggleButtons() {

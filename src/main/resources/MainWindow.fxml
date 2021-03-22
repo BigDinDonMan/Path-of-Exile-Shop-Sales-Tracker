@@ -29,7 +29,7 @@
               <menus>
                 <Menu mnemonicParsing="false" text="File">
                      <items>
-                        <MenuItem mnemonicParsing="false" onAction="#saveShopSales" text="Save sales">
+                        <MenuItem mnemonicParsing="false" onAction="#saveDbData" text="Save sales">
                            <accelerator>
                               <KeyCodeCombination alt="UP" code="S" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                            </accelerator>
@@ -43,7 +43,7 @@
                 </Menu>
                  <Menu mnemonicParsing="false" text="Edit">
                     <items>
-                       <MenuItem mnemonicParsing="false" onAction="#undoRecentSale" text="Undo recent sale addition">
+                       <MenuItem mnemonicParsing="false" onAction="#undo" text="Undo recent sale addition">
                           <accelerator>
                              <KeyCodeCombination alt="UP" code="Z" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                           </accelerator>
@@ -60,7 +60,7 @@
             <Label fx:id="statusLabel" layoutX="996.0" layoutY="5.0" textAlignment="RIGHT" />
          </children>
       </AnchorPane>
-      <TabPane fx:id="formsTabPane" layoutX="6.0" layoutY="32.0" prefHeight="390.0" prefWidth="987.0" style="-fx-border-color: lightgray;" tabClosingPolicy="UNAVAILABLE" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0">
+      <TabPane fx:id="formsTabPane" layoutX="6.0" layoutY="32.0" prefHeight="390.0" prefWidth="987.0" style="-fx-border-color: lightgray;" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="32.0">
          <tabs>
             <Tab text="Sales">
                <content>
@@ -239,6 +239,34 @@
                               <Insets bottom="12.5" top="20.0" />
                            </VBox.margin>
                         </Button>
+                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                           <children>
+                              <VBox prefHeight="200.0" prefWidth="100.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                 <children>
+                                    <HBox spacing="5.0">
+                                       <children>
+                                          <ComboBox fx:id="dateFilterComboBox" prefHeight="31.0" prefWidth="129.0" promptText="Select date" />
+                                          <Button fx:id="clearFiltersButton" mnemonicParsing="false" onAction="#clearFilters" prefHeight="31.0" prefWidth="96.0" text="Clear filters">
+                                             <styleClass>
+                                                <String fx:value="btn" />
+                                                <String fx:value="btn-primary" />
+                                             </styleClass>
+                                          </Button>
+                                          <ComboBox fx:id="categoryFilterComboBox" prefHeight="31.0" prefWidth="161.0" promptText="Select category" />
+                                       </children>
+                                       <VBox.margin>
+                                          <Insets bottom="5.0" left="5.0" top="5.0" />
+                                       </VBox.margin>
+                                    </HBox>
+                                    <ListView fx:id="shopSalesListView" prefHeight="571.0" prefWidth="432.0">
+                                       <VBox.margin>
+                                          <Insets bottom="5.0" left="5.0" right="5.0" />
+                                       </VBox.margin>
+                                    </ListView>
+                                 </children>
+                              </VBox>
+                           </children>
+                        </AnchorPane>
                      </children>
                   </VBox>
                </content>
@@ -281,7 +309,7 @@
                                           <VBox prefHeight="200.0" prefWidth="100.0">
                                              <children>
                                                 <Label text="Service name" />
-                                                <TextField />
+                                                <TextField fx:id="serviceNameTextField" />
                                              </children>
                                              <GridPane.margin>
                                                 <Insets left="5.0" right="5.0" />
@@ -290,7 +318,7 @@
                                           <VBox prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1">
                                              <children>
                                                 <Label text="Times performed" />
-                                                <TextField />
+                                                <TextField fx:id="timesPerformedTextField" />
                                              </children>
                                              <GridPane.margin>
                                                 <Insets left="5.0" right="5.0" />
@@ -298,7 +326,7 @@
                                           </VBox>
                                           <HBox alignment="CENTER" GridPane.columnSpan="2" GridPane.rowIndex="1">
                                              <children>
-                                                <DatePicker prefHeight="31.0" prefWidth="275.0" promptText="Input date of service performance" />
+                                                <DatePicker fx:id="serviceDatePicker" prefHeight="31.0" prefWidth="275.0" promptText="Input date of service performance" />
                                              </children>
                                           </HBox>
                                        </children>
@@ -325,7 +353,7 @@
                                                       <Insets />
                                                    </VBox.margin>
                                                 </Label>
-                                                <ComboBox maxWidth="1.7976931348623157E308" prefHeight="31.0" prefWidth="168.0">
+                                                <ComboBox fx:id="paymentsComboBox" maxWidth="1.7976931348623157E308" prefHeight="31.0" prefWidth="168.0">
                                                    <VBox.margin>
                                                       <Insets />
                                                    </VBox.margin>
@@ -342,7 +370,7 @@
                                                       <Insets />
                                                    </VBox.margin>
                                                 </Label>
-                                                <TextField maxWidth="1.7976931348623157E308" prefHeight="31.0" prefWidth="194.0">
+                                                <TextField fx:id="paymentAmountTextField" maxWidth="1.7976931348623157E308" prefHeight="31.0" prefWidth="194.0">
                                                    <VBox.margin>
                                                       <Insets />
                                                    </VBox.margin>
@@ -397,72 +425,45 @@
                               <Insets bottom="12.5" top="20.0" />
                            </VBox.margin>
                         </Button>
+                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                           <children>
+                              <VBox alignment="BOTTOM_CENTER" layoutX="5.0" layoutY="98.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                 <children>
+                                    <HBox maxHeight="1.7976931348623157E308" prefHeight="9.0" prefWidth="997.0" VBox.vgrow="ALWAYS" />
+                                    <ListView fx:id="servicesListView" maxHeight="1.7976931348623157E308" prefHeight="224.0" prefWidth="987.0" VBox.vgrow="ALWAYS">
+                                       <VBox.margin>
+                                          <Insets bottom="5.0" left="5.0" right="5.0" />
+                                       </VBox.margin>
+                                    </ListView>
+                                 </children>
+                              </VBox>
+                           </children>
+                        </AnchorPane>
                      </children>
                   </VBox>
                </content>
             </Tab>
             <Tab text="Gems">
                <content>
-                  <AnchorPane prefHeight="200.0" prefWidth="200.0" />
+                  <AnchorPane prefHeight="200.0" prefWidth="200.0">
+                     <children>
+                        <AnchorPane prefHeight="200.0" prefWidth="200.0">
+                           <children>
+                              <VBox prefHeight="200.0" prefWidth="100.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                 <children>
+                                    <HBox prefHeight="56.0" prefWidth="997.0" />
+                                    <ListView fx:id="gemsListView" prefHeight="275.0" prefWidth="987.0" VBox.vgrow="ALWAYS">
+                                       <VBox.margin>
+                                          <Insets bottom="5.0" left="5.0" right="5.0" />
+                                       </VBox.margin>
+                                    </ListView>
+                                 </children>
+                              </VBox>
+                           </children>
+                        </AnchorPane>
+                     </children></AnchorPane>
                </content></Tab>
          </tabs>
-      </TabPane>
-      <TabPane layoutY="422.0" prefHeight="342.0" prefWidth="997.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
-        <tabs>
-          <Tab text="Sales">
-            <content>
-              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                     <children>
-                        <VBox prefHeight="200.0" prefWidth="100.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                           <children>
-                              <HBox spacing="5.0">
-                                 <children>
-                                    <ComboBox fx:id="dateFilterComboBox" prefHeight="31.0" prefWidth="129.0" promptText="Select date" />
-                                    <Button fx:id="clearFiltersButton" mnemonicParsing="false" onAction="#clearFilters" prefHeight="31.0" prefWidth="96.0" text="Clear filters">
-                                       <styleClass>
-                                          <String fx:value="btn" />
-                                          <String fx:value="btn-primary" />
-                                       </styleClass>
-                                    </Button>
-                                    <ComboBox fx:id="categoryFilterComboBox" prefHeight="31.0" prefWidth="161.0" promptText="Select category" />
-                                 </children>
-                                 <VBox.margin>
-                                    <Insets bottom="5.0" left="5.0" top="5.0" />
-                                 </VBox.margin>
-                              </HBox>
-                              <ListView fx:id="shopSalesListView" prefHeight="571.0" prefWidth="432.0">
-                                 <VBox.margin>
-                                    <Insets bottom="5.0" left="5.0" right="5.0" />
-                                 </VBox.margin>
-                              </ListView>
-                           </children>
-                        </VBox>
-                     </children>
-                  </AnchorPane>
-            </content>
-          </Tab>
-          <Tab text="Services">
-            <content>
-              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                     <children>
-                        <VBox alignment="BOTTOM_CENTER" layoutX="5.0" layoutY="98.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                           <children>
-                              <HBox maxHeight="1.7976931348623157E308" prefHeight="9.0" prefWidth="997.0" VBox.vgrow="ALWAYS" />
-                              <ListView fx:id="servicesListView" maxHeight="1.7976931348623157E308" prefHeight="224.0" prefWidth="987.0" VBox.vgrow="ALWAYS">
-                                 <VBox.margin>
-                                    <Insets bottom="5.0" left="5.0" right="5.0" />
-                                 </VBox.margin>
-                              </ListView>
-                           </children>
-                        </VBox>
-                     </children></AnchorPane>
-            </content>
-          </Tab>
-           <Tab text="Gems">
-               <content>
-                  <AnchorPane prefHeight="200.0" prefWidth="200.0" />
-               </content></Tab>
-        </tabs>
       </TabPane>
    </children>
 </AnchorPane>

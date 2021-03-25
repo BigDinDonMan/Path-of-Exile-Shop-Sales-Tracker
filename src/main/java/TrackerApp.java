@@ -2,6 +2,7 @@ import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import org.kordamp.bootstrapfx.BootstrapFX;
 
@@ -18,7 +19,7 @@ public class TrackerApp extends javafx.application.Application {
     @Override
     public void start(Stage stage) throws Exception {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("MainWindow.fxml"));
-        Parent p = loader.load();
+        AnchorPane p = loader.load();
         MainWindowController controller = loader.getController();
         Scene s = new Scene(p);
         s.getStylesheets().add(BootstrapFX.bootstrapFXStylesheet());
@@ -32,6 +33,7 @@ public class TrackerApp extends javafx.application.Application {
             controller.shutdown();
             ApplicationDatabase.shutdown();
         });
+        stage.sizeToScene();
         stage.show();
     }
 

@@ -21,7 +21,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane fx:id="root" prefHeight="760.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="MainWindowController">
+<AnchorPane fx:id="root" prefHeight="760.0" prefWidth="860.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="MainWindowController">
    <children>
       <AnchorPane AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
@@ -65,7 +65,7 @@
             <Label fx:id="statusLabel" alignment="CENTER_RIGHT" layoutX="755.0" layoutY="5.0" maxWidth="1.7976931348623157E308" prefHeight="21.0" prefWidth="232.0" textAlignment="RIGHT" AnchorPane.rightAnchor="10.0" />
          </children>
       </AnchorPane>
-      <TabPane fx:id="formsTabPane" layoutX="6.0" layoutY="32.0" prefHeight="390.0" prefWidth="987.0" style="-fx-border-color: lightgray;" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="32.0">
+      <TabPane layoutX="6.0" layoutY="32.0" prefHeight="390.0" prefWidth="987.0" style="-fx-border-color: lightgray;" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="32.0">
          <tabs>
             <Tab text="Sales">
                <content>
@@ -256,13 +256,13 @@
                                     <HBox spacing="5.0">
                                        <children>
                                           <ComboBox fx:id="dateFilterComboBox" prefHeight="31.0" prefWidth="129.0" promptText="Select date" />
-                                          <Button fx:id="clearFiltersButton" mnemonicParsing="false" onAction="#clearFilters" prefHeight="31.0" prefWidth="96.0" text="Clear filters">
+                                          <ComboBox fx:id="categoryFilterComboBox" prefHeight="31.0" prefWidth="161.0" promptText="Select category" />
+                                          <Button mnemonicParsing="false" onAction="#clearFilters" prefHeight="31.0" prefWidth="96.0" text="Clear filters">
                                              <styleClass>
                                                 <String fx:value="btn" />
                                                 <String fx:value="btn-primary" />
                                              </styleClass>
                                           </Button>
-                                          <ComboBox fx:id="categoryFilterComboBox" prefHeight="31.0" prefWidth="161.0" promptText="Select category" />
                                        </children>
                                        <VBox.margin>
                                           <Insets bottom="5.0" left="5.0" top="5.0" />

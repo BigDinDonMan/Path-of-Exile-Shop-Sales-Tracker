@@ -26,10 +26,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
-//todo: make application go into system tray after closing/minimizing the window
 //todo: add item category icons in combobox
-//todo: change 2 tabpanes into a single one
-//todo: add undo/redo as a command/memento pattern with redo/undo methods and a subclass that takes a list and an item added/removed to that list
 public class MainWindowController implements Initializable {
 
     @FXML
@@ -37,9 +34,6 @@ public class MainWindowController implements Initializable {
 
     @FXML
     private HBox serviceCategoryTogglesParent;
-
-    @FXML
-    private TabPane formsTabPane;
 
     @FXML
     private Label statusLabel;
@@ -97,9 +91,6 @@ public class MainWindowController implements Initializable {
 
     @FXML
     private ComboBox<ItemCategory> categoryFilterComboBox;
-
-    @FXML
-    private Button clearFiltersButton;
 
     private ToggleGroup serviceTypeToggleGroup;
 
@@ -505,6 +496,19 @@ public class MainWindowController implements Initializable {
 
     private void onServiceAdded(PoEService service) {
 
+
+        var command = new AddToListCommand<>(recentlyAddedServicesList, service);
+        command.addUndoCallback(() -> {
+            Platform.runLater(() -> {
+                servicesListView.getItems().remove(service);
+            });
+        });
+        command.addRedoCallback(() -> {
+            Platform.runLater(() -> {
+                servicesListView.getItems().add(service);
+            });
+        });
+        undoCommands.add(command);
     }
 
     @FXML

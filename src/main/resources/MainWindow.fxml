@@ -21,7 +21,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane fx:id="root" prefHeight="760.0" prefWidth="997.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="MainWindowController">
+<AnchorPane fx:id="root" prefHeight="760.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="MainWindowController">
    <children>
       <AnchorPane AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
@@ -43,11 +43,16 @@
                 </Menu>
                  <Menu mnemonicParsing="false" text="Edit">
                     <items>
-                       <MenuItem mnemonicParsing="false" onAction="#undo" text="Undo recent sale addition">
+                       <MenuItem mnemonicParsing="false" onAction="#undo" text="Undo">
                           <accelerator>
                              <KeyCodeCombination alt="UP" code="Z" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                           </accelerator>
                        </MenuItem>
+                        <MenuItem mnemonicParsing="false" onAction="#redo" text="Redo">
+                           <accelerator>
+                              <KeyCodeCombination alt="UP" code="Y" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                           </accelerator>
+                        </MenuItem>
                     </items>
                  </Menu>
                 <Menu mnemonicParsing="false" text="Help">

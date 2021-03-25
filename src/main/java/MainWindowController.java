@@ -111,7 +111,8 @@ public class MainWindowController implements Initializable {
     private List<PoEService> recentlyAddedServicesList;
     private List<LevelledSkillGem> recentlyAddedGemsList;
 
-    private Stack<AddToListCommand<Object>> undoRedoCommands;
+    private Stack<AddToListCommand<? extends Object>> undoCommands;
+    private Stack<AddToListCommand<? extends Object>> redoCommands;
 
     private BooleanProperty unsavedChangesPresent;
 
@@ -123,7 +124,8 @@ public class MainWindowController implements Initializable {
         recentlyAddedSalesList = new ArrayList<>();
         recentlyAddedGemsList = new ArrayList<>();
         recentlyAddedServicesList = new ArrayList<>();
-        undoRedoCommands = new Stack<>();
+        undoCommands = new Stack<>();
+        redoCommands = new Stack<>();
     }
 
     @Override
@@ -480,6 +482,21 @@ public class MainWindowController implements Initializable {
             dateFilterComboBox.getItems().add(s.getSaleDate());
             dateFilterComboBox.getItems().sort(Comparator.naturalOrder());
         }
+
+        var command = new AddToListCommand<>(recentlyAddedSalesList, s);
+        command.addUndoCallback(() -> {
+            Platform.runLater(() -> {
+                shopSalesListView.getItems().remove(s);
+            });
+            unsavedChangesPresent.setValue(!recentlyAddedSalesList.isEmpty());
+        });
+        command.addRedoCallback(() -> {
+            Platform.runLater(() -> {
+                shopSalesListView.getItems().add(s);
+            });
+            unsavedChangesPresent.setValue(true);
+        });
+        undoCommands.add(command);
     }
 
     private void onGemAdded(LevelledSkillGem lsg) {
@@ -552,20 +569,18 @@ public class MainWindowController implements Initializable {
 
     @FXML
     private void undo() {
-        if (recentlyAddedSalesList.isEmpty()) {
-            return;
-        }
-        var toDelete = recentlyAddedSalesList.get(recentlyAddedSalesList.size() - 1);
-        recentlyAddedSalesList.remove(toDelete);
-        shopSalesListView.getItems().remove(toDelete);
-        if (recentlyAddedSalesList.isEmpty()) {
-            unsavedChangesPresent.setValue(false);
-        }
+        if (undoCommands.isEmpty()) return;
+        var command = undoCommands.pop();
+        redoCommands.push(command);
+        command.undo();
     }
 
     @FXML
     private void redo() {
-
+        if (redoCommands.isEmpty()) return;
+        var command = redoCommands.pop();
+        undoCommands.push(command);
+        command.redo();
     }
 
     private void setUpCategoryToggleButtons() {

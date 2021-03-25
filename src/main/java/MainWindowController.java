@@ -131,24 +131,6 @@ public class MainWindowController implements Initializable {
             Platform.runLater(() -> statusLabel.setText(newValue ? "Unsaved changes!" : ""));
         });
 
-//        formsTabPane.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-//            if (oldValue != newValue) {
-//                List<? extends Object> list = null;
-//                switch (newValue.getText()) {
-//                    case "Gems":
-//                        list = recentlyAddedGemsList;
-//                        break;
-//                    case "Services":
-//                        list = recentlyAddedServicesList;
-//                        break;
-//                    case "Sales":
-//                        list = recentlyAddedSalesList;
-//                        break;
-//                }
-//                currentRedoList = currentUndoList = list;
-//            }
-//        });
-
         setUpListViewAndAutoCompleter();
         setUpNewSaleForm();
         setUpSaleFilters();
@@ -354,7 +336,41 @@ public class MainWindowController implements Initializable {
 
     @FXML
     private void addNewService() {
+        var selectedToggle = (CategoryToggleButton)serviceTypeToggleGroup.getSelectedToggle();
+        if (selectedToggle == null) {
+            new Alert(Alert.AlertType.ERROR, "Please select a service category").showAndWait();
+            return;
+        }
+        var serviceType = selectedToggle.getServiceCategory();
 
+        var serviceName = serviceNameTextField.getText().strip();
+        if (serviceName.isBlank()) {
+            new Alert(Alert.AlertType.ERROR, "Please input a valid service name").showAndWait();
+            return;
+        }
+
+        var date = serviceDatePicker.getValue();
+        if (date == null) {
+            new Alert(Alert.AlertType.ERROR, "Please select a valid date").showAndWait();
+            return;
+        }
+
+        var amount = 1;
+
+        try {
+            amount = Integer.parseInt(timesPerformedTextField.getText());
+        } catch (NumberFormatException nfe) {
+            new Alert(Alert.AlertType.ERROR,"Please input a valid numeric value").showAndWait();
+            return;
+        }
+
+        var payments = new ArrayList<>(paymentsListView.getItems());
+
+        PoEService service = new PoEService(serviceName, amount, serviceType, payments);
+        recentlyAddedServicesList.add(service);
+        servicesListView.getItems().add(service);
+        unsavedChangesPresent.setValue(true);
+        onServiceAdded(service);
     }
 
     @FXML
@@ -407,7 +423,7 @@ public class MainWindowController implements Initializable {
         Service<Boolean> saveService = new ScheduledService<Boolean>() {
             @Override
             protected Task<Boolean> createTask() {
-                return new SaveDataToDatabaseTask(recentlyAddedSalesList);
+                return new SaveDataToDatabaseTask(recentlyAddedSalesList, recentlyAddedServicesList, recentlyAddedGemsList);
             }
         };
         ProgressDialog progressDialog = new ProgressDialog(saveService);

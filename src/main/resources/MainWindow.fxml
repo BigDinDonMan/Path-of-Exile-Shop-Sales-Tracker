@@ -57,7 +57,7 @@
                 </Menu>
               </menus>
             </MenuBar>
-            <Label fx:id="statusLabel" layoutX="996.0" layoutY="5.0" textAlignment="RIGHT" />
+            <Label fx:id="statusLabel" alignment="CENTER_RIGHT" layoutX="755.0" layoutY="5.0" maxWidth="1.7976931348623157E308" prefHeight="21.0" prefWidth="232.0" textAlignment="RIGHT" AnchorPane.rightAnchor="10.0" />
          </children>
       </AnchorPane>
       <TabPane fx:id="formsTabPane" layoutX="6.0" layoutY="32.0" prefHeight="390.0" prefWidth="987.0" style="-fx-border-color: lightgray;" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="32.0">
@@ -66,7 +66,7 @@
                <content>
                   <VBox alignment="CENTER" prefHeight="388.0" prefWidth="985.0">
                      <children>
-                        <HBox alignment="TOP_CENTER" prefHeight="383.0" prefWidth="985.0">
+                        <HBox alignment="TOP_CENTER" prefHeight="314.0" prefWidth="985.0">
                            <children>
                               <GridPane maxWidth="1.7976931348623157E308" prefHeight="190.0" prefWidth="100.0" HBox.hgrow="ALWAYS">
                                  <columnConstraints>
@@ -241,7 +241,7 @@
                         </HBox>
                         <Button alignment="TOP_LEFT" mnemonicParsing="false" onAction="#addNewShopSale" text="Add new sale">
                            <VBox.margin>
-                              <Insets bottom="15.0" />
+                              <Insets top="15.0" />
                            </VBox.margin>
                         </Button>
                         <AnchorPane maxHeight="1.7976931348623157E308" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" VBox.vgrow="ALWAYS">

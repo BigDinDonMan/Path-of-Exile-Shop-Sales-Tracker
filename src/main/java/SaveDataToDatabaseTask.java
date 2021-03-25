@@ -10,11 +10,13 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class SaveSalesToDbTask extends Task<Boolean> {
+public class SaveDataToDatabaseTask extends Task<Boolean> {
 
     private List<ShopSale> sales;
+    private List<LevelledSkillGem> gems;
+    private List<PoEService> services;
 
-    public SaveSalesToDbTask(Collection<? extends ShopSale> c) {
+    public SaveDataToDatabaseTask(Collection<? extends ShopSale> c) {
         super();
         this.sales = new ArrayList<>(c);
     }
@@ -53,4 +55,39 @@ public class SaveSalesToDbTask extends Task<Boolean> {
         return true;
     }
 
+    private void saveSales(Session s) {
+        Transaction transaction = null;
+        try {
+
+        } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            throw e;
+        }
+    }
+
+    private void saveServices(Session s) {
+        Transaction transaction = null;
+        try {
+
+        } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            throw e;
+        }
+    }
+
+    private void saveGems(Session s) {
+        Transaction transaction = null;
+        try {
+
+        } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            throw e;
+        }
+    }
 }

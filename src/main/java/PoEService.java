@@ -2,6 +2,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -23,6 +24,9 @@ public class PoEService {
 
     @Column(name = "count_performed")
     private int countPerformed;
+
+    @Column(name = "service_date")
+    private LocalDate serviceDate;
 
     @Enumerated(value = EnumType.STRING)
     @Column(name = "service_type")

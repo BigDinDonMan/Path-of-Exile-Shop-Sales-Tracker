@@ -34,7 +34,7 @@
                               <KeyCodeCombination alt="UP" code="S" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                            </accelerator>
                         </MenuItem>
-                        <MenuItem mnemonicParsing="false" onAction="#loadLogFiles" text="Load log files">
+                        <MenuItem mnemonicParsing="false" onAction="#loadSaleLogFiles" text="Load log files">
                            <accelerator>
                               <KeyCodeCombination alt="UP" code="O" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                            </accelerator>

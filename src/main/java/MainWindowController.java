@@ -504,7 +504,7 @@ public class MainWindowController implements Initializable {
     }
 
     @FXML
-    private void loadLogFiles() {
+    private void loadSaleLogFiles() {
         FileChooser fc = new FileChooser();
         var txtFilter = new FileChooser.ExtensionFilter("Txt log files (*.txt)", "*.txt");
         fc.getExtensionFilters().add(txtFilter);

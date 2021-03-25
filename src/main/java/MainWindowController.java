@@ -27,10 +27,9 @@ import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
 //todo: make application go into system tray after closing/minimizing the window
-//todo: add undo to adding last shop sale
-//todo: add progress bar/progress window when saving records to database
 //todo: add item category icons in combobox
 //todo: change 2 tabpanes into a single one
+//todo: add undo/redo as a command/memento pattern with redo/undo methods and a subclass that takes a list and an item added/removed to that list
 public class MainWindowController implements Initializable {
 
     @FXML
@@ -107,15 +106,11 @@ public class MainWindowController implements Initializable {
     private ContextMenu itemNamesAutoCompleteMenu;
     private List<MenuItem> autoCompleteData;
     private BiFunction<String, ItemCategory, String> nameMapper;
-    private SortedList<ShopSale> sortedSaleList;
-    private FilteredList<ShopSale> filteredSaleList;
 
     private List<ShopSale> recentlyAddedSalesList;
     private List<PoEService> recentlyAddedServicesList;
     private List<LevelledSkillGem> recentlyAddedGemsList;
 
-    private List<? extends Object> currentUndoList;
-    private List<? extends Object> currentRedoList;
 
     private BooleanProperty unsavedChangesPresent;
 
@@ -127,8 +122,6 @@ public class MainWindowController implements Initializable {
         recentlyAddedSalesList = new ArrayList<>();
         recentlyAddedGemsList = new ArrayList<>();
         recentlyAddedServicesList = new ArrayList<>();
-        currentUndoList = recentlyAddedSalesList;
-        currentRedoList = recentlyAddedSalesList;
     }
 
     @Override
@@ -138,23 +131,23 @@ public class MainWindowController implements Initializable {
             Platform.runLater(() -> statusLabel.setText(newValue ? "Unsaved changes!" : ""));
         });
 
-        formsTabPane.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            if (oldValue != newValue) {
-                List<? extends Object> list = null;
-                switch (newValue.getText()) {
-                    case "Gems":
-                        list = recentlyAddedGemsList;
-                        break;
-                    case "Services":
-                        list = recentlyAddedServicesList;
-                        break;
-                    case "Sales":
-                        list = recentlyAddedSalesList;
-                        break;
-                }
-                currentRedoList = currentUndoList = list;
-            }
-        });
+//        formsTabPane.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+//            if (oldValue != newValue) {
+//                List<? extends Object> list = null;
+//                switch (newValue.getText()) {
+//                    case "Gems":
+//                        list = recentlyAddedGemsList;
+//                        break;
+//                    case "Services":
+//                        list = recentlyAddedServicesList;
+//                        break;
+//                    case "Sales":
+//                        list = recentlyAddedSalesList;
+//                        break;
+//                }
+//                currentRedoList = currentUndoList = list;
+//            }
+//        });
 
         setUpListViewAndAutoCompleter();
         setUpNewSaleForm();
@@ -541,7 +534,7 @@ public class MainWindowController implements Initializable {
 
     @FXML
     private void undo() {
-        if (currentUndoList.isEmpty()) {
+        if (recentlyAddedSalesList.isEmpty()) {
             return;
         }
         var toDelete = recentlyAddedSalesList.get(recentlyAddedSalesList.size() - 1);

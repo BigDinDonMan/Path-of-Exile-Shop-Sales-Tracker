@@ -111,6 +111,7 @@ public class MainWindowController implements Initializable {
     private List<PoEService> recentlyAddedServicesList;
     private List<LevelledSkillGem> recentlyAddedGemsList;
 
+    private Stack<AddToListCommand<Object>> undoRedoCommands;
 
     private BooleanProperty unsavedChangesPresent;
 
@@ -122,6 +123,7 @@ public class MainWindowController implements Initializable {
         recentlyAddedSalesList = new ArrayList<>();
         recentlyAddedGemsList = new ArrayList<>();
         recentlyAddedServicesList = new ArrayList<>();
+        undoRedoCommands = new Stack<>();
     }
 
     @Override

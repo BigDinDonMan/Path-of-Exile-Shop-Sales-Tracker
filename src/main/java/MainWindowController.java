@@ -130,6 +130,8 @@ public class MainWindowController implements Initializable {
         setUpNewSaleForm();
         setUpSaleFilters();
         setUpCategoryToggleButtons();
+
+        setUpNewServiceForm();
     }
 
     //<editor-fold desc="setup methods">
@@ -300,6 +302,36 @@ public class MainWindowController implements Initializable {
         });
 
         categoryFilterComboBox.getItems().addAll(ItemCategory.values());
+    }
+
+    private void setUpNewServiceForm() {
+        paymentsComboBox.setCellFactory(callback -> new ListCell<>() {
+            private ImageView iv = new ImageView();
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (!isEmpty()) {
+                    setText(item);
+                    iv.setFitWidth(32);
+                    iv.setFitHeight(32);
+                    iv.setImage(GlobalData.getCurrencyIcons().get(item));
+                    setGraphic(iv);
+                }
+            }
+        });
+        paymentsComboBox.getItems().addAll(GlobalData.getCurrencies());
+
+        paymentAmountTextField.textProperty().addListener(((observableValue, oldValue, newValue) -> {
+            if (!newValue.matches("\\d*")) {
+                paymentAmountTextField.setText(oldValue);
+            }
+        }));
+
+        timesPerformedTextField.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue.matches("\\d*")) {
+                timesPerformedTextField.setText(oldValue);
+            }
+        });
     }
     //</editor-fold>
 

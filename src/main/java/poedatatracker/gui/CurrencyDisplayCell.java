@@ -1,8 +1,11 @@
+package poedatatracker.gui;
+
 import javafx.geometry.Pos;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
+import poedatatracker.core.models.ReceivedCurrency;
 
 import java.util.Arrays;
 import java.util.List;

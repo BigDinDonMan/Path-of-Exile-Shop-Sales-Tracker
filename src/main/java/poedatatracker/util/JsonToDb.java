@@ -1,13 +1,15 @@
+package poedatatracker.util;
+
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import poedatatracker.core.ApplicationDatabase;
+import poedatatracker.core.models.ShopSale;
 
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;

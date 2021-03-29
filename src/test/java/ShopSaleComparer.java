@@ -1,3 +1,6 @@
+import poedatatracker.core.models.ReceivedCurrency;
+import poedatatracker.core.models.ShopSale;
+
 import java.util.ArrayList;
 import java.util.Comparator;
 

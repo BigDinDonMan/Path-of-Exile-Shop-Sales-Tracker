@@ -1,9 +1,12 @@
 import com.google.gson.Gson;
-import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import poedatatracker.core.models.ItemCategory;
+import poedatatracker.core.models.ReceivedCurrency;
+import poedatatracker.core.models.ShopSale;
+import poedatatracker.core.models.SoldItem;
+import poedatatracker.util.LogFileLoader;
 
 import java.io.File;
 import java.io.IOException;

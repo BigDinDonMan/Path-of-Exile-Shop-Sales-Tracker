@@ -1,6 +1,6 @@
-import lombok.AllArgsConstructor;
+package poedatatracker.core.models;
+
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import org.apache.maven.shared.utils.StringUtils;
 
 import javax.persistence.*;

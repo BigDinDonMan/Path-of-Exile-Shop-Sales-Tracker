@@ -1,14 +1,11 @@
+package poedatatracker.core;
+
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.scene.image.Image;
 import lombok.Getter;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
@@ -50,7 +47,7 @@ public class GlobalData {
 
         currencies.forEach(name -> {
             String filename = String.join("-", name.toLowerCase().split(" "));
-            Image i = new Image(GlobalData.class.getResource(String.format("images/%s.png", filename)).toExternalForm());
+            Image i = new Image(GlobalData.class.getResource(String.format("/images/%s.png", filename)).toExternalForm());
             currencyIcons.put(name, i);
         });
 

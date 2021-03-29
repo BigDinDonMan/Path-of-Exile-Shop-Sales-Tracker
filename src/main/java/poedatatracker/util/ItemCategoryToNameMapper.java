@@ -1,5 +1,8 @@
+package poedatatracker.util;
+
+import poedatatracker.core.models.ItemCategory;
+
 import java.util.function.BiFunction;
-import java.util.function.Function;
 
 public class ItemCategoryToNameMapper implements BiFunction<String, ItemCategory, String> {
 

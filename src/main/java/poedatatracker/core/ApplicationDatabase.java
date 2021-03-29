@@ -1,9 +1,12 @@
+package poedatatracker.core;
+
 import lombok.Getter;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
+import poedatatracker.core.models.*;
 
 import javax.persistence.criteria.*;
 import java.io.*;

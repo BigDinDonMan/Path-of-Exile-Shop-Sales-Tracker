@@ -1,10 +1,10 @@
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import org.kordamp.bootstrapfx.BootstrapFX;
+import poedatatracker.core.ApplicationDatabase;
 
 import javax.imageio.ImageIO;
 import java.awt.*;

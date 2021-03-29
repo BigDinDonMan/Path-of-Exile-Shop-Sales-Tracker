@@ -1,3 +1,5 @@
+package poedatatracker.core.models;
+
 import javafx.scene.paint.Color;
 import org.apache.maven.shared.utils.StringUtils;
 

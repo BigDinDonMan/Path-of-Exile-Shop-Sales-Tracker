@@ -1,8 +1,6 @@
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.collections.transformation.FilteredList;
-import javafx.collections.transformation.SortedList;
 import javafx.concurrent.ScheduledService;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
@@ -17,6 +15,17 @@ import javafx.scene.layout.Priority;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import org.controlsfx.dialog.ProgressDialog;
+import poedatatracker.core.ApplicationDatabase;
+import poedatatracker.core.GlobalData;
+import poedatatracker.core.commands.AddToListCommand;
+import poedatatracker.core.models.*;
+import poedatatracker.gui.controls.CategoryToggleButton;
+import poedatatracker.gui.CurrencyDisplayCell;
+import poedatatracker.gui.dialogs.LoadedShopSaleViewDialog;
+import poedatatracker.gui.ShopSaleListCell;
+import poedatatracker.util.ItemCategoryToNameMapper;
+import poedatatracker.util.LogFileLoader;
+import poedatatracker.util.SaveDataToDatabaseTask;
 
 import java.io.IOException;
 import java.net.URL;

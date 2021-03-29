@@ -1,6 +1,5 @@
-import lombok.AllArgsConstructor;
+package poedatatracker.core.commands;
 
-import javax.management.ConstructorParameters;
 import java.util.ArrayList;
 import java.util.List;
 //todo: add additional callbacks, like updating UI

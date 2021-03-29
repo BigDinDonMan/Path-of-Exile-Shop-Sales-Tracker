@@ -1,5 +1,8 @@
+package poedatatracker.gui.controls;
+
 import javafx.scene.control.ToggleButton;
 import lombok.Getter;
+import poedatatracker.core.models.PoEServiceType;
 
 @Getter
 public class CategoryToggleButton extends ToggleButton {

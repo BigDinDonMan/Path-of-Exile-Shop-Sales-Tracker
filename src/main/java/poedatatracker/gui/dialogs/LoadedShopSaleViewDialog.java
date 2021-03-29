@@ -1,3 +1,5 @@
+package poedatatracker.gui.dialogs;
+
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -5,6 +7,10 @@ import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import poedatatracker.core.GlobalData;
+import poedatatracker.core.models.ItemCategory;
+import poedatatracker.core.models.ShopSale;
+import poedatatracker.gui.CurrencyDisplayCell;
 
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;

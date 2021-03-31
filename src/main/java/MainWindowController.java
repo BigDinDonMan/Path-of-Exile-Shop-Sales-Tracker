@@ -20,9 +20,10 @@ import poedatatracker.core.GlobalData;
 import poedatatracker.core.commands.AddToListCommand;
 import poedatatracker.core.models.*;
 import poedatatracker.gui.controls.CategoryToggleButton;
-import poedatatracker.gui.CurrencyDisplayCell;
+import poedatatracker.gui.display.CurrencyDisplayCell;
 import poedatatracker.gui.dialogs.LoadedShopSaleViewDialog;
-import poedatatracker.gui.ShopSaleListCell;
+import poedatatracker.gui.display.ServiceListCell;
+import poedatatracker.gui.display.ShopSaleListCell;
 import poedatatracker.util.ItemCategoryToNameMapper;
 import poedatatracker.util.LogFileLoader;
 import poedatatracker.util.SaveDataToDatabaseTask;
@@ -341,6 +342,20 @@ public class MainWindowController implements Initializable {
                 timesPerformedTextField.setText(oldValue);
             }
         });
+
+        servicesListView.setCellFactory(callback -> new ServiceListCell());
+        paymentsListView.setCellFactory(c -> new ListCell<>() {
+            @Override
+            protected void updateItem(PoEServicePayment item, boolean empty) {
+                super.updateItem(item, empty);
+                setGraphic(
+                        !isEmpty() ?
+                                new CurrencyDisplayCell(item, GlobalData.getCurrencyIcons().get(item.getCurrencyName()), 32d, 14) :
+                                null
+                );
+                setText(null);
+            }
+        });
     }
     //</editor-fold>
 
@@ -402,7 +417,7 @@ public class MainWindowController implements Initializable {
 
         var payments = new ArrayList<>(paymentsListView.getItems());
 
-        PoEService service = new PoEService(serviceName, amount, serviceType, payments);
+        PoEService service = new PoEService(serviceName, amount, serviceType, date, payments);
         recentlyAddedServicesList.add(service);
         servicesListView.getItems().add(service);
         unsavedChangesPresent.setValue(true);
@@ -448,7 +463,7 @@ public class MainWindowController implements Initializable {
         shopSalesListView.getItems().add(sale);
         unsavedChangesPresent.setValue(true);
         onSaleAdded(sale);
-        clearMandatoryInputs();
+        clearMandatorySaleInputs();
     }
 
     @FXML
@@ -470,6 +485,10 @@ public class MainWindowController implements Initializable {
             progressDialog.close();
             unsavedChangesPresent.setValue(false);
             recentlyAddedSalesList.clear();
+            recentlyAddedGemsList.clear();
+            recentlyAddedServicesList.clear();
+            undoCommands.clear();
+            redoCommands.clear();
         });
 
         saveService.setOnFailed(e -> {
@@ -490,7 +509,7 @@ public class MainWindowController implements Initializable {
         progressDialog.showAndWait();
     }
 
-    private void clearMandatoryInputs() {
+    private void clearMandatorySaleInputs() {
         currenciesListView.getItems().clear();
         itemNameTextField.setText("");
         itemCategoryComboBox.getSelectionModel().clearSelection();

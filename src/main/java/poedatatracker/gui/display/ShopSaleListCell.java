@@ -1,4 +1,4 @@
-package poedatatracker.gui;
+package poedatatracker.gui.display;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -12,7 +12,6 @@ import javafx.scene.text.Text;
 import poedatatracker.core.GlobalData;
 import poedatatracker.core.models.ItemCategory;
 import poedatatracker.core.models.ShopSale;
-import poedatatracker.gui.CurrencyDisplayCell;
 import poedatatracker.util.ItemCategoryToNameMapper;
 
 import java.awt.*;
@@ -64,8 +63,7 @@ public class ShopSaleListCell extends ListCell<ShopSale> {
     private void openInBrowser(String encoded) throws URISyntaxException, IOException {
         String url = BASE_WIKI_URL + encoded;
         if (Desktop.isDesktopSupported()) {
-            var desktop = Desktop.getDesktop();
-            desktop.browse(new URI(url));
+            Desktop.getDesktop().browse(new URI(url));
         }
     }
 

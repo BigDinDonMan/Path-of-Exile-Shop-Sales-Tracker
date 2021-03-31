@@ -37,15 +37,16 @@ public class PoEService {
     @OneToMany(mappedBy = "service", fetch = FetchType.EAGER)
     private List<PoEServicePayment> payments;
 
-    public PoEService(String name, int count, PoEServiceType type) {
+    public PoEService(String name, int count, PoEServiceType type, LocalDate date) {
         this.serviceName = name;
         this.countPerformed = count;
         this.serviceType = type;
+        this.serviceDate = date;
         this.payments = Collections.emptyList();
     }
 
-    public PoEService(String name, int count, PoEServiceType type, Collection<? extends PoEServicePayment> payments) {
-        this(name, count, type);
+    public PoEService(String name, int count, PoEServiceType type, LocalDate date, Collection<? extends PoEServicePayment> payments) {
+        this(name, count, type, date);
         this.payments = new ArrayList<>(payments);
     }
 }

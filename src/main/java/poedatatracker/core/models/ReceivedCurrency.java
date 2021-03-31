@@ -13,7 +13,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @Entity
 @Table(name = "received_currencies")
-public class ReceivedCurrency implements Serializable {
+public class ReceivedCurrency implements Serializable, Currency {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "currency_id")

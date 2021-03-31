@@ -1,10 +1,11 @@
-package poedatatracker.gui;
+package poedatatracker.gui.display;
 
 import javafx.geometry.Pos;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
+import poedatatracker.core.models.Currency;
 import poedatatracker.core.models.ReceivedCurrency;
 
 import java.util.Arrays;
@@ -12,7 +13,7 @@ import java.util.List;
 
 public class CurrencyDisplayCell extends HBox {
 
-    private ReceivedCurrency displayCurrency;
+    private Currency displayCurrency;
     private Image icon;
     private double iconSize = 24d;
     private int fontSize = 14;
@@ -21,7 +22,7 @@ public class CurrencyDisplayCell extends HBox {
         super();
     }
 
-    public CurrencyDisplayCell(ReceivedCurrency currency, Image icon, double iconSize, int fontSize) {
+    public CurrencyDisplayCell(Currency currency, Image icon, double iconSize, int fontSize) {
         this.displayCurrency = currency;
         this.iconSize = iconSize;
         this.icon = icon;

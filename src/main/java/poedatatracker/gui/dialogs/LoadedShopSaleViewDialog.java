@@ -10,7 +10,7 @@ import javafx.scene.text.Text;
 import poedatatracker.core.GlobalData;
 import poedatatracker.core.models.ItemCategory;
 import poedatatracker.core.models.ShopSale;
-import poedatatracker.gui.CurrencyDisplayCell;
+import poedatatracker.gui.display.CurrencyDisplayCell;
 
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;

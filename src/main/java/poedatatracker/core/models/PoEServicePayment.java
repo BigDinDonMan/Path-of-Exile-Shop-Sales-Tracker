@@ -5,12 +5,13 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity
 @Table(name = "poe_services_payments")
 @NoArgsConstructor
 @Getter
-public class PoEServicePayment {
+public class PoEServicePayment implements Serializable, Currency {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

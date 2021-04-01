@@ -99,15 +99,15 @@ public class ShopSaleListCell extends ListCell<ShopSale> {
         VBox.setMargin(currenciesText, nodeInsets);
         var currenciesRoot = new VBox();
 
-        for (var currency : sale.getCurrencies()) {
+        sale.getCurrencies().forEach(c -> {
             var displayCell = new CurrencyDisplayCell(
-                    currency,
-                    GlobalData.getCurrencyIcons().get(currency.getCurrencyName()),
+                    c,
+                    GlobalData.getCurrencyIcons().get(c.getCurrencyName()),
                     24d,
                     12
             );
             currenciesRoot.getChildren().add(displayCell);
-        }
+        });
         root.getChildren().addAll(dateLabel, itemNameText, categoryParent, currenciesText, currenciesRoot);
         return root;
     }

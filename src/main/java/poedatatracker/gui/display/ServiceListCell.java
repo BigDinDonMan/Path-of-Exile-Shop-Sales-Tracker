@@ -7,6 +7,7 @@ import javafx.scene.control.ListCell;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import poedatatracker.core.GlobalData;
 import poedatatracker.core.models.PoEService;
 import poedatatracker.core.models.PoEServiceType;
 
@@ -42,7 +43,24 @@ public class ServiceListCell extends ListCell<PoEService> {
         serviceTypeLabel.setStyle("-fx-font-weight: bold;");
         serviceTypeInfoParent.getChildren().addAll(serviceLabel, serviceTypeLabel);
 
-        root.getChildren().addAll(dateLabel, servicePerformedLabel, timesPerformedText, serviceTypeInfoParent);
+        var paymentsText = new Text("Payments: ");
+        var paymentsRoot = new VBox();
+        VBox.setMargin(paymentsRoot, nodeInsets);
+        VBox.setMargin(paymentsText, nodeInsets);
+
+        item.getPayments().forEach(c -> {
+            var displayCell = new CurrencyDisplayCell(c, GlobalData.getCurrencyIcons().get(c.getCurrencyName()), 24d, 12);
+            paymentsRoot.getChildren().add(displayCell);
+        });
+
+        root.getChildren().addAll(
+                dateLabel,
+                servicePerformedLabel,
+                timesPerformedText,
+                serviceTypeInfoParent,
+                paymentsText,
+                paymentsRoot
+        );
         return root;
     }
 }

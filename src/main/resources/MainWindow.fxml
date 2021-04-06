@@ -3,6 +3,7 @@
 <?import java.lang.String?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
@@ -346,7 +347,7 @@
                                     </GridPane>
                                  </children>
                                  <HBox.margin>
-                                    <Insets />
+                                    <Insets left="5.0" right="5.0" />
                                  </HBox.margin></VBox>
                               <VBox maxWidth="1.7976931348623157E308" prefHeight="200.0" prefWidth="100.0" HBox.hgrow="ALWAYS">
                                  <children>
@@ -430,6 +431,9 @@
                                        </VBox.margin>
                                     </VBox>
                                  </children>
+                                 <HBox.margin>
+                                    <Insets left="5.0" right="5.0" />
+                                 </HBox.margin>
                               </VBox>
                            </children>
                         </HBox>
@@ -456,25 +460,95 @@
                   </VBox>
                </content>
             </Tab>
-            <Tab disable="true" text="Gems">
+            <Tab text="Gems">
                <content>
-                  <AnchorPane prefHeight="200.0" prefWidth="200.0">
+                  <VBox prefHeight="200.0" prefWidth="100.0">
                      <children>
-                        <AnchorPane prefHeight="200.0" prefWidth="200.0">
+                        <GridPane maxHeight="1.7976931348623157E308" VBox.vgrow="ALWAYS">
+                          <columnConstraints>
+                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                          </columnConstraints>
+                          <rowConstraints>
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                          </rowConstraints>
                            <children>
-                              <VBox prefHeight="200.0" prefWidth="100.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                              <VBox prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1">
                                  <children>
-                                    <HBox prefHeight="56.0" prefWidth="997.0" />
-                                    <ListView fx:id="gemsListView" prefHeight="275.0" prefWidth="987.0" VBox.vgrow="ALWAYS">
+                                    <Label text="Currently added" />
+                                    <ListView fx:id="currentlyAddedGemsListView" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
+                                 </children>
+                              </VBox>
+                              <VBox alignment="CENTER">
+                                 <children>
+                                    <GridPane VBox.vgrow="ALWAYS">
+                                      <columnConstraints>
+                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                      </columnConstraints>
+                                      <rowConstraints>
+                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                      </rowConstraints>
+                                       <children>
+                                          <VBox prefHeight="200.0" prefWidth="100.0" GridPane.hgrow="ALWAYS">
+                                             <children>
+                                                <Label text="Gem name" />
+                                                <TextField fx:id="gemNameTextField" />
+                                             </children>
+                                          </VBox>
+                                          <VBox prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS">
+                                             <children>
+                                                <Label text="Gem max level" />
+                                                <TextField fx:id="gemMaxLevelTextField" />
+                                             </children>
+                                          </VBox>
+                                          <VBox prefHeight="200.0" prefWidth="100.0" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1">
+                                             <children>
+                                                <Label text="Gem quality" />
+                                                <TextField fx:id="gemQualityTextField" />
+                                             </children>
+                                          </VBox>
+                                          <VBox prefHeight="200.0" prefWidth="100.0" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2">
+                                             <children>
+                                                <Label text="Gem type" />
+                                                <ComboBox fx:id="gemTypeComboBox" maxWidth="1.7976931348623157E308" />
+                                             </children>
+                                          </VBox>
+                                          <VBox prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2">
+                                             <children>
+                                                <Label text="Gem quality type" />
+                                                <ComboBox fx:id="gemQualityTypeComboBox" maxWidth="1.7976931348623157E308" />
+                                             </children>
+                                          </VBox>
+                                          <CheckBox fx:id="isGemCorruptedCheckBox" mnemonicParsing="false" text="Corrupted?" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                          <VBox GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="3" GridPane.valignment="CENTER">
+                                             <children>
+                                                <Label text="Levelling date" />
+                                                <DatePicker fx:id="levellingDatePicker" maxWidth="1.7976931348623157E308" />
+                                             </children>
+                                          </VBox>
+                                       </children>
+                                    </GridPane>
+                                    <Button mnemonicParsing="false" onAction="#addNewGem" text="Add new gem">
                                        <VBox.margin>
-                                          <Insets bottom="5.0" left="5.0" right="5.0" />
+                                          <Insets bottom="10.0" />
                                        </VBox.margin>
-                                    </ListView>
+                                    </Button>
                                  </children>
                               </VBox>
                            </children>
-                        </AnchorPane>
-                     </children></AnchorPane>
+                        </GridPane>
+                        <VBox prefHeight="0.0" prefWidth="848.0" VBox.vgrow="ALWAYS">
+                           <children>
+                              <HBox maxHeight="1.7976931348623157E308" VBox.vgrow="ALWAYS" />
+                              <ListView fx:id="gemsListView" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
+                           </children>
+                        </VBox>
+                     </children>
+                  </VBox>
                </content></Tab>
          </tabs>
       </TabPane>

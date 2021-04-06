@@ -1,14 +1,17 @@
 package poedatatracker.core.models;
 
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.apache.maven.shared.utils.StringUtils;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.Objects;
 
 @Entity
 @Table(name = "levelled_gems")
 @NoArgsConstructor
+@Getter
 public class LevelledSkillGem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,8 +35,21 @@ public class LevelledSkillGem {
     @Enumerated(value = EnumType.STRING)
     private GemType gemType;
 
+    @Column(name = "levelling_date")
+    private LocalDate levellingDate;
+
     @Column
     private boolean corrupted;
+
+    public LevelledSkillGem(String name, int maxLevel, int quality, GemQualityType qualityType, GemType type, LocalDate date, boolean isCorrupted) {
+        this.gemName = name;
+        this.maxLevel = maxLevel;
+        this.quality = quality;
+        this.qualityType = qualityType;
+        this.gemType = type;
+        this.levellingDate = date;
+        this.corrupted = isCorrupted;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -65,7 +81,7 @@ public class LevelledSkillGem {
     public String toString() {
         var sb = new StringBuilder();
         if (this.quality > 0 && !this.qualityType.equals(GemQualityType.SUPERIOR)) {
-            sb.append(this.qualityType.prettyName()).append(' ');
+            sb.append(this.qualityType.prettifyName()).append(' ');
         }
         sb.append(this.gemName).append('\n');
         sb.append(StringUtils.capitalise(this.gemType.name().toLowerCase())).append('\n');

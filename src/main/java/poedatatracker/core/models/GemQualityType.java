@@ -2,10 +2,11 @@ package poedatatracker.core.models;
 
 import org.apache.maven.shared.utils.StringUtils;
 
-public enum GemQualityType {
+public enum GemQualityType implements DecoratedEnum {
     SUPERIOR, ANOMALOUS, DIVERGENT, PHANTASMAL;
 
-    public String prettyName() {
-        return StringUtils.capitalise(name());
+    @Override
+    public String prettifyName() {
+        return StringUtils.capitalise(name().toLowerCase());
     }
 }

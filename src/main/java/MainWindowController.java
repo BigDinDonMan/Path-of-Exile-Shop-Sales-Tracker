@@ -20,12 +20,11 @@ import poedatatracker.core.GlobalData;
 import poedatatracker.core.commands.AddToListCommand;
 import poedatatracker.core.models.*;
 import poedatatracker.gui.controls.CategoryToggleButton;
-import poedatatracker.gui.display.CurrencyDisplayCell;
+import poedatatracker.gui.display.*;
 import poedatatracker.gui.dialogs.LoadedShopSaleViewDialog;
-import poedatatracker.gui.display.ServiceListCell;
-import poedatatracker.gui.display.ShopSaleListCell;
 import poedatatracker.util.ItemCategoryToNameMapper;
 import poedatatracker.util.LogFileLoader;
+import poedatatracker.util.IntegerTextValidator;
 import poedatatracker.util.SaveDataToDatabaseTask;
 
 import java.io.IOException;
@@ -102,6 +101,30 @@ public class MainWindowController implements Initializable {
     @FXML
     private ComboBox<ItemCategory> categoryFilterComboBox;
 
+    @FXML
+    private ComboBox<GemQualityType> gemQualityTypeComboBox;
+
+    @FXML
+    private ComboBox<GemType> gemTypeComboBox;
+
+    @FXML
+    private TextField gemNameTextField;
+
+    @FXML
+    private TextField gemMaxLevelTextField;
+
+    @FXML
+    private TextField gemQualityTextField;
+
+    @FXML
+    private CheckBox isGemCorruptedCheckBox;
+
+    @FXML
+    private DatePicker levellingDatePicker;
+
+    @FXML
+    private ListView<LevelledSkillGem> currentlyAddedGemsListView;
+
     private ToggleGroup serviceTypeToggleGroup;
 
     private ContextMenu itemNamesAutoCompleteMenu;
@@ -142,6 +165,7 @@ public class MainWindowController implements Initializable {
         setUpCategoryToggleButtons();
 
         setUpNewServiceForm();
+        setUpNewGemForm();
     }
 
     //<editor-fold desc="setup methods">
@@ -231,15 +255,9 @@ public class MainWindowController implements Initializable {
 
         currencyComboBox.getItems().addAll(GlobalData.getCurrencies());
 
-        itemAmountTextField.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (!newValue.matches("\\d*"))
-                itemAmountTextField.setText(oldValue);
-        });
+        itemAmountTextField.textProperty().addListener(new IntegerTextValidator(itemAmountTextField, false));
 
-        currencyAmountTextField.textProperty().addListener(((observableValue, oldValue, newValue) -> {
-            if (!newValue.matches("\\d*"))
-                currencyAmountTextField.setText(oldValue);
-        }));
+        currencyAmountTextField.textProperty().addListener(new IntegerTextValidator(currencyAmountTextField, false));
 
         currenciesListView.setCellFactory(c -> new ListCell<>() {
             @Override
@@ -331,17 +349,9 @@ public class MainWindowController implements Initializable {
         });
         paymentsComboBox.getItems().addAll(GlobalData.getCurrencies());
 
-        paymentAmountTextField.textProperty().addListener(((observableValue, oldValue, newValue) -> {
-            if (!newValue.matches("\\d*")) {
-                paymentAmountTextField.setText(oldValue);
-            }
-        }));
+        paymentAmountTextField.textProperty().addListener(new IntegerTextValidator(paymentAmountTextField, false));
 
-        timesPerformedTextField.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (!newValue.matches("\\d*")) {
-                timesPerformedTextField.setText(oldValue);
-            }
-        });
+        timesPerformedTextField.textProperty().addListener(new IntegerTextValidator(timesPerformedTextField, false));
 
         servicesListView.setCellFactory(callback -> new ServiceListCell());
         paymentsListView.setCellFactory(c -> new ListCell<>() {
@@ -356,6 +366,16 @@ public class MainWindowController implements Initializable {
                 setText(null);
             }
         });
+    }
+
+    private void setUpNewGemForm() {
+        gemsListView.setCellFactory(callback -> new GemDisplayListCell());
+        gemMaxLevelTextField.textProperty().addListener(new IntegerTextValidator(gemMaxLevelTextField, false));
+        gemQualityTextField.textProperty().addListener(new IntegerTextValidator(gemQualityTextField, false));
+        gemQualityTypeComboBox.getItems().addAll(GemQualityType.values());
+        gemQualityTypeComboBox.setCellFactory(callback -> new SimpleEnumListCell<GemQualityType>());
+        gemTypeComboBox.getItems().addAll(GemType.values());
+        gemTypeComboBox.setCellFactory(callback -> new SimpleEnumListCell<GemType>());
     }
     //</editor-fold>
 
@@ -426,7 +446,48 @@ public class MainWindowController implements Initializable {
 
     @FXML
     private void addNewGem() {
+        String gemName = gemNameTextField.getText().strip();
+        if (gemName == null || gemName.isBlank()) {
+            new Alert(Alert.AlertType.ERROR,"Please input a valid gem name").showAndWait();
+            return;
+        }
 
+        if (gemMaxLevelTextField.getText().isBlank()) {
+            new Alert(Alert.AlertType.ERROR, "Please input a valid max level").showAndWait();
+            return;
+        }
+
+        if (gemQualityTextField.getText().isBlank()) {
+            new Alert(Alert.AlertType.ERROR, "Please input a valid quality").showAndWait();
+            return;
+        }
+        int maxLevel = Integer.parseInt(gemMaxLevelTextField.getText());
+        int quality = Integer.parseInt(gemQualityTextField.getText());
+        boolean corrupted = isGemCorruptedCheckBox.isSelected();
+        GemType gemType = gemTypeComboBox.getSelectionModel().getSelectedItem();
+        GemQualityType gemQualityType = gemQualityTypeComboBox.getSelectionModel().getSelectedItem();
+        if (gemType == null || gemQualityType == null) {
+            new Alert(Alert.AlertType.ERROR, "Please select a valid quality type and/or gem type").showAndWait();
+            return;
+        }
+        LocalDate date = levellingDatePicker.getValue();
+        if (date == null) {
+            new Alert(Alert.AlertType.ERROR, "Please select a valid date").showAndWait();
+            return;
+        }
+        LevelledSkillGem gem = new LevelledSkillGem(
+                gemName,
+                maxLevel,
+                quality,
+                gemQualityType,
+                gemType,
+                date,
+                corrupted
+        );
+        gemsListView.getItems().add(gem);
+        recentlyAddedGemsList.add(gem);
+        unsavedChangesPresent.setValue(true);
+        onGemAdded(gem);
     }
 
     @FXML
@@ -551,7 +612,22 @@ public class MainWindowController implements Initializable {
     }
 
     private void onGemAdded(LevelledSkillGem lsg) {
+        currentlyAddedGemsListView.getItems().add(lsg);
 
+        var command = new AddToListCommand<>(recentlyAddedGemsList, lsg);
+        command.addRedoCallback(() -> {
+            Platform.runLater(() -> {
+                gemsListView.getItems().add(lsg);
+                currentlyAddedGemsListView.getItems().add(lsg);
+            });
+        });
+        command.addUndoCallback(() -> {
+            Platform.runLater(() -> {
+                gemsListView.getItems().remove(lsg);
+                currentlyAddedGemsListView.getItems().remove(lsg);
+            });
+        });
+        undoCommands.add(command);
     }
 
     private void onServiceAdded(PoEService service) {

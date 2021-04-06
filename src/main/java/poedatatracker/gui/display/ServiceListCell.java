@@ -21,7 +21,6 @@ public class ServiceListCell extends ListCell<PoEService> {
     @Override
     protected void updateItem(PoEService item, boolean empty) {
         super.updateItem(item, empty);
-        System.out.println(item);
         setGraphic(isEmpty() ? null : createDisplayControl(item));
         setText(null);
     }

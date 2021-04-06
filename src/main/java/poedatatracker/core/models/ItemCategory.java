@@ -6,7 +6,7 @@ import org.apache.maven.shared.utils.StringUtils;
 import java.util.HashMap;
 import java.util.Map;
 
-public enum ItemCategory {
+public enum ItemCategory implements DecoratedEnum {
     EQUIPMENT,
     JEWELLERY,
     UNIQUE,
@@ -62,6 +62,7 @@ public enum ItemCategory {
         return categoryColors.getOrDefault(ic, DEFAULT_COLOR);
     }
 
+    @Override
     public String prettifyName() {
         String[] parts = name().toLowerCase().split("_");
         return StringUtils.capitalise(String.join(" ", parts));

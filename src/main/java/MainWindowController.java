@@ -4,6 +4,8 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.concurrent.ScheduledService;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Side;
@@ -33,6 +35,7 @@ import java.time.LocalDate;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BiFunction;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 //todo: add item category icons in combobox
@@ -150,6 +153,8 @@ public class MainWindowController implements Initializable {
 
     private AtomicBoolean clearingFilters;
 
+    private Function<String, EventHandler<ActionEvent>> gemAutoCompleteHandler;
+
     public MainWindowController() {
         clearingFilters = new AtomicBoolean(false);
         unsavedChangesPresent = new SimpleBooleanProperty();
@@ -158,6 +163,13 @@ public class MainWindowController implements Initializable {
         recentlyAddedServicesList = new ArrayList<>();
         undoCommands = new Stack<>();
         redoCommands = new Stack<>();
+        gemAutoCompleteHandler = s -> e -> {
+            var parts = s.split(",");
+            gemNameTextField.setText(parts[0]);
+            gemNameTextField.positionCaret(gemNameTextField.getText().length());
+            gemMaxLevelTextField.setText(parts[2].substring(parts[2].indexOf("max level:") + "max level:".length()).strip());
+            gemTypeComboBox.getSelectionModel().select(GemType.valueOf(parts[1].strip().toUpperCase()));
+        };
     }
 
     @Override
@@ -187,13 +199,7 @@ public class MainWindowController implements Initializable {
         autoCompleteGemData =
                 gemData.stream().map(s -> {
                     var item = new MenuItem(s);
-                    item.setOnAction(e -> {
-                        var parts = s.split(",");
-                        gemNameTextField.setText(parts[0]);
-                        gemNameTextField.positionCaret(gemNameTextField.getText().length());
-                        gemMaxLevelTextField.setText(parts[2].substring(parts[2].indexOf("max level:") + "max level:".length()).strip());
-                        gemTypeComboBox.getSelectionModel().select(GemType.valueOf(parts[1].strip().toUpperCase()));
-                    });
+                    item.setOnAction(gemAutoCompleteHandler.apply(s));
                     return item;
                 }).collect(Collectors.toList());
         gemNameTextField.textProperty().addListener((observable, oldValue, newValue) -> {
@@ -552,7 +558,7 @@ public class MainWindowController implements Initializable {
             new Alert(Alert.AlertType.ERROR, "Please select a valid date from the date picker.").showAndWait();
             return;
         }
-        ShopSale sale = new ShopSale(0L, date, currencies, new SoldItem(itemName, itemAmount, category));
+        var sale = new ShopSale(0L, date, currencies, new SoldItem(itemName, itemAmount, category));
         recentlyAddedSalesList.add(sale);
         shopSalesListView.getItems().add(sale);
         unsavedChangesPresent.setValue(true);
@@ -560,12 +566,16 @@ public class MainWindowController implements Initializable {
         clearMandatorySaleInputs();
     }
 
+    private void showAlert(String message) {
+
+    }
+
     @FXML
     private void saveDbData() {
         if (recentlyAddedSalesList.isEmpty() && recentlyAddedServicesList.isEmpty() && recentlyAddedGemsList.isEmpty()) {
             return;
         }
-        Service<Boolean> saveService = new ScheduledService<Boolean>() {
+        Service<Boolean> saveService = new ScheduledService<>() {
             @Override
             protected Task<Boolean> createTask() {
                 return new SaveDataToDatabaseTask(recentlyAddedSalesList, recentlyAddedServicesList, recentlyAddedGemsList);
@@ -583,6 +593,7 @@ public class MainWindowController implements Initializable {
             recentlyAddedServicesList.clear();
             undoCommands.clear();
             redoCommands.clear();
+            currentlyAddedGemsListView.getItems().clear();
         });
 
         saveService.setOnFailed(e -> {
@@ -660,18 +671,11 @@ public class MainWindowController implements Initializable {
 
     private void onGemAdded(LevelledSkillGem lsg) {
         currentlyAddedGemsListView.getItems().add(lsg);
-        if (!autoCompleteGemData.stream().anyMatch(item -> item.getText().contains(lsg.getGemName()))) {
+        if (autoCompleteGemData.stream().noneMatch(item -> item.getText().contains(lsg.getGemName()))) {
             final var item = new MenuItem(
                     String.format("%s, %s, max level: %d", lsg.getGemName(), lsg.getGemType().name().toLowerCase(), lsg.getMaxLevel())
             );
-            item.setOnAction(e -> {
-                var s = item.getText();
-                var parts = s.split(",");
-                gemNameTextField.setText(parts[0]);
-                gemNameTextField.positionCaret(gemNameTextField.getText().length());
-                gemMaxLevelTextField.setText(parts[2].substring(parts[2].indexOf("max level:") + "max level:".length()).strip());
-                gemTypeComboBox.getSelectionModel().select(GemType.valueOf(parts[1].strip().toUpperCase()));
-            });
+            item.setOnAction(gemAutoCompleteHandler.apply(item.getText()));
             autoCompleteGemData.add(item);
         }
 

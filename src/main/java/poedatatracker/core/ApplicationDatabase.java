@@ -6,6 +6,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
+import org.hibernate.query.Query;
 import poedatatracker.core.models.*;
 
 import javax.persistence.criteria.*;
@@ -37,7 +38,8 @@ public class ApplicationDatabase {
                 ReceivedCurrency.class,
                 SoldItem.class,
                 PoEService.class,
-                PoEServicePayment.class
+                PoEServicePayment.class,
+                LevelledSkillGem.class
         );
         annotatedClasses.forEach(dbConfig::addAnnotatedClass);
         var registry = new StandardServiceRegistryBuilder().applySettings(dbConfig.getProperties()).build();
@@ -69,7 +71,6 @@ public class ApplicationDatabase {
         session.close();
         return dates;
     }
-
 
     public static List<ShopSale> fetchAllSales() {
         Session session = getNewSession();
@@ -117,6 +118,18 @@ public class ApplicationDatabase {
         transaction.commit();
         session.close();
         return results;
+    }
+
+    @SuppressWarnings("unchecked")
+    public static List<String> fetchGemData() {
+        try (var s = getNewSession()) {
+            Transaction t = s.beginTransaction();
+            String hqlQuery = "select g.gemName || ', ' || lower(g.gemType) || ', max level: ' || g.maxLevel from LevelledSkillGem g";
+            Query<String> query = s.createQuery(hqlQuery);
+            List<String> result = query.getResultList();
+            t.commit();
+            return result;
+        }
     }
 
     public static boolean exportSalesToTxt(String filePath) {

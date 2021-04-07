@@ -101,6 +101,7 @@ public class MainWindowController implements Initializable {
     @FXML
     private ComboBox<ItemCategory> categoryFilterComboBox;
 
+    //<editor-fold desc="Gem data fields">
     @FXML
     private ComboBox<GemQualityType> gemQualityTypeComboBox;
 
@@ -124,12 +125,18 @@ public class MainWindowController implements Initializable {
 
     @FXML
     private ListView<LevelledSkillGem> currentlyAddedGemsListView;
+    //</editor-fold>
 
     private ToggleGroup serviceTypeToggleGroup;
 
-    private ContextMenu itemNamesAutoCompleteMenu;
+    //<editor-fold desc="Autocompleters data">
     private ContextMenu gemNamesAutoCompleteMenu;
-    private List<MenuItem> autoCompleteData;
+    private List<MenuItem> autoCompleteGemData;
+
+    private ContextMenu itemNamesAutoCompleteMenu;
+    private List<MenuItem> autoCompleteSalesData;
+    //</editor-fold>
+
     private BiFunction<String, ItemCategory, String> nameMapper;
 
     private List<ShopSale> recentlyAddedSalesList;
@@ -167,9 +174,51 @@ public class MainWindowController implements Initializable {
 
         setUpNewServiceForm();
         setUpNewGemForm();
+        setUpGemAutoCompleter();
     }
 
     //<editor-fold desc="setup methods">
+
+    private void setUpGemAutoCompleter() {
+        gemNamesAutoCompleteMenu = new ContextMenu();
+        gemNamesAutoCompleteMenu.setPrefWidth(gemNameTextField.getWidth());
+        autoCompleteGemData = new ArrayList<>();
+        var gemData = ApplicationDatabase.fetchGemData();
+        autoCompleteGemData =
+                gemData.stream().map(s -> {
+                    var item = new MenuItem(s);
+                    item.setOnAction(e -> {
+                        var parts = s.split(",");
+                        gemNameTextField.setText(parts[0]);
+                        gemNameTextField.positionCaret(gemNameTextField.getText().length());
+                        gemMaxLevelTextField.setText(parts[2].substring(parts[2].indexOf("max level:") + "max level:".length()).strip());
+                        gemTypeComboBox.getSelectionModel().select(GemType.valueOf(parts[1].strip().toUpperCase()));
+                    });
+                    return item;
+                }).collect(Collectors.toList());
+        gemNameTextField.textProperty().addListener((observable, oldValue, newValue) -> {
+            gemNamesAutoCompleteMenu.getItems().clear();
+            String input = gemNameTextField.getText().toLowerCase();
+            if (input.isBlank()) return;
+
+            autoCompleteGemData.
+                    stream().
+                    filter(i -> i.getText().toLowerCase().startsWith(input)).
+                    limit(10).
+                    forEach(e -> gemNamesAutoCompleteMenu.getItems().add(e));
+
+            if (!gemNamesAutoCompleteMenu.isShowing()) {
+                gemNamesAutoCompleteMenu.show(gemNameTextField, Side.BOTTOM, 0, 0);
+            }
+        });
+
+        gemNameTextField.focusedProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue) {
+                gemNamesAutoCompleteMenu.hide();
+            }
+        });
+    }
+
     private void setUpListViewAndAutoCompleter() {
         shopSalesListView.setCellFactory(c -> new ShopSaleListCell());
         List<ShopSale> sales = ApplicationDatabase.fetchAllSales();
@@ -179,7 +228,7 @@ public class MainWindowController implements Initializable {
         nameMapper = new ItemCategoryToNameMapper();
         itemNamesAutoCompleteMenu = new ContextMenu();
         itemNamesAutoCompleteMenu.setPrefWidth(itemNameTextField.getWidth());
-        autoCompleteData = sales.stream().
+        autoCompleteSalesData = sales.stream().
                 map(sale -> nameMapper.apply(sale.getItem().getName(), sale.getItem().getCategory())).
                 filter(name -> !name.isBlank()).distinct().
                 map(s -> {
@@ -198,7 +247,7 @@ public class MainWindowController implements Initializable {
             String input = itemNameTextField.getText().toLowerCase();
             if (input.isBlank()) return;
 
-            autoCompleteData.
+            autoCompleteSalesData.
                     stream().
                     filter(i -> i.getText().toLowerCase().startsWith(input)).
                     limit(10).
@@ -579,13 +628,13 @@ public class MainWindowController implements Initializable {
 
     private void onSaleAdded(ShopSale s) {
         final String name = nameMapper.apply(s.getItem().getName(), s.getItem().getCategory());
-        if (autoCompleteData.stream().noneMatch(item -> item.getText().equals(name))) {
+        if (autoCompleteSalesData.stream().noneMatch(item -> item.getText().equals(name))) {
             final MenuItem mi = new MenuItem(name);
             mi.setOnAction(e -> {
                 itemNameTextField.setText(mi.getText());
                 itemNameTextField.positionCaret(mi.getText().length());
             });
-            autoCompleteData.add(mi);
+            autoCompleteSalesData.add(mi);
         }
 
         if (!dateFilterComboBox.getItems().contains(s.getSaleDate())) {
@@ -611,8 +660,22 @@ public class MainWindowController implements Initializable {
 
     private void onGemAdded(LevelledSkillGem lsg) {
         currentlyAddedGemsListView.getItems().add(lsg);
+        if (!autoCompleteGemData.stream().anyMatch(item -> item.getText().contains(lsg.getGemName()))) {
+            final var item = new MenuItem(
+                    String.format("%s, %s, max level: %d", lsg.getGemName(), lsg.getGemType().name().toLowerCase(), lsg.getMaxLevel())
+            );
+            item.setOnAction(e -> {
+                var s = item.getText();
+                var parts = s.split(",");
+                gemNameTextField.setText(parts[0]);
+                gemNameTextField.positionCaret(gemNameTextField.getText().length());
+                gemMaxLevelTextField.setText(parts[2].substring(parts[2].indexOf("max level:") + "max level:".length()).strip());
+                gemTypeComboBox.getSelectionModel().select(GemType.valueOf(parts[1].strip().toUpperCase()));
+            });
+            autoCompleteGemData.add(item);
+        }
 
-        var command = new AddToListCommand<>(recentlyAddedGemsList, lsg);
+        final var command = new AddToListCommand<>(recentlyAddedGemsList, lsg);
         command.addRedoCallback(() -> {
             Platform.runLater(() -> {
                 gemsListView.getItems().add(lsg);

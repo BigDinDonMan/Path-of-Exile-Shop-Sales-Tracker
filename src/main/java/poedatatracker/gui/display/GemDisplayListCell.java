@@ -26,7 +26,22 @@ public class GemDisplayListCell extends ListCell<LevelledSkillGem> {
         var dateText = new Text(item.getLevellingDate().format(formatter));
         dateText.setStyle("-fx-font-weight: bold; -fx-font-size: 18px;");
         VBox.setMargin(dateText, nodeInsets);
-        root.getChildren().addAll(dateText);
+
+        StringBuilder sb = new StringBuilder();
+        sb.append(item.getGemName()).append(" level ").append(item.getMaxLevel());
+        int quality = item.getQuality();
+        if (quality > 0) {
+            sb.append(' ').append(quality).append("% quality");
+        }
+        if (item.isCorrupted()) {
+            sb.append(" (corrupted)");
+        }
+        sb.append("\n");
+        sb.append("Gem type: ").append(item.getGemType().prettifyName()).append('\n');
+        sb.append("Quality type: ").append(item.getQualityType().prettifyName()).append('\n');
+        var gemDescriptionText = new Text(sb.toString());
+
+        root.getChildren().addAll(dateText, gemDescriptionText);
         return root;
     }
 }

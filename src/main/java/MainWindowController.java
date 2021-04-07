@@ -128,6 +128,7 @@ public class MainWindowController implements Initializable {
     private ToggleGroup serviceTypeToggleGroup;
 
     private ContextMenu itemNamesAutoCompleteMenu;
+    private ContextMenu gemNamesAutoCompleteMenu;
     private List<MenuItem> autoCompleteData;
     private BiFunction<String, ItemCategory, String> nameMapper;
 
@@ -214,27 +215,9 @@ public class MainWindowController implements Initializable {
             }
         });
 
-        itemCategoryComboBox.setCellFactory(callback -> new ListCell<>() {
-            @Override
-            protected void updateItem(ItemCategory item, boolean empty) {
-                super.updateItem(item, empty);
-                if (!isEmpty()) {
-                    setText(item.prettifyName());
-                    setGraphic(null);
-                }
-            }
-        });
+        itemCategoryComboBox.setCellFactory(callback -> new SimpleEnumListCell<ItemCategory>());
 
-        itemCategoryComboBox.setButtonCell(new ListCell<>() {
-            @Override
-            protected void updateItem(ItemCategory item, boolean empty) {
-                super.updateItem(item, empty);
-                if (!isEmpty()) {
-                    setText(item.prettifyName());
-                    setGraphic(null);
-                }
-            }
-        });
+        itemCategoryComboBox.setButtonCell(new SimpleEnumListCell<ItemCategory>());
 
         itemCategoryComboBox.getItems().addAll(ItemCategory.values());
 
@@ -374,8 +357,10 @@ public class MainWindowController implements Initializable {
         gemQualityTextField.textProperty().addListener(new IntegerTextValidator(gemQualityTextField, false));
         gemQualityTypeComboBox.getItems().addAll(GemQualityType.values());
         gemQualityTypeComboBox.setCellFactory(callback -> new SimpleEnumListCell<GemQualityType>());
+        gemQualityTypeComboBox.setButtonCell(new SimpleEnumListCell<GemQualityType>());
         gemTypeComboBox.getItems().addAll(GemType.values());
         gemTypeComboBox.setCellFactory(callback -> new SimpleEnumListCell<GemType>());
+        gemTypeComboBox.setButtonCell(new SimpleEnumListCell<GemType>());
     }
     //</editor-fold>
 
@@ -441,6 +426,7 @@ public class MainWindowController implements Initializable {
         recentlyAddedServicesList.add(service);
         servicesListView.getItems().add(service);
         unsavedChangesPresent.setValue(true);
+        clearMandatoryServiceInputs();
         onServiceAdded(service);
     }
 
@@ -452,18 +438,15 @@ public class MainWindowController implements Initializable {
             return;
         }
 
-        if (gemMaxLevelTextField.getText().isBlank()) {
-            new Alert(Alert.AlertType.ERROR, "Please input a valid max level").showAndWait();
-            return;
-        }
-
-        if (gemQualityTextField.getText().isBlank()) {
-            new Alert(Alert.AlertType.ERROR, "Please input a valid quality").showAndWait();
-            return;
-        }
-        int maxLevel = Integer.parseInt(gemMaxLevelTextField.getText());
-        int quality = Integer.parseInt(gemQualityTextField.getText());
+        String maxLevelStr = gemMaxLevelTextField.getText();
+        String qualityStr = gemQualityTextField.getText();
+        int maxLevel = maxLevelStr.isBlank() ? 20 : Integer.parseInt(gemMaxLevelTextField.getText());
+        int quality = qualityStr.isBlank() ? 0 : Integer.parseInt(gemQualityTextField.getText());
         boolean corrupted = isGemCorruptedCheckBox.isSelected();
+        if (!corrupted && quality > 20) {
+            new Alert(Alert.AlertType.ERROR, "Quality can be over 20 only if the gem is corrupted!").showAndWait();
+            return;
+        }
         GemType gemType = gemTypeComboBox.getSelectionModel().getSelectedItem();
         GemQualityType gemQualityType = gemQualityTypeComboBox.getSelectionModel().getSelectedItem();
         if (gemType == null || gemQualityType == null) {
@@ -488,6 +471,7 @@ public class MainWindowController implements Initializable {
         recentlyAddedGemsList.add(gem);
         unsavedChangesPresent.setValue(true);
         onGemAdded(gem);
+        clearMandatoryGemInputs();
     }
 
     @FXML
@@ -577,6 +561,20 @@ public class MainWindowController implements Initializable {
         currencyComboBox.getSelectionModel().clearSelection();
         itemAmountTextField.setText("");
         currencyAmountTextField.setText("");
+    }
+
+    private void clearMandatoryGemInputs() {
+        gemNameTextField.setText("");
+        gemQualityTextField.setText("");
+        isGemCorruptedCheckBox.setSelected(false);
+        gemMaxLevelTextField.setText("");
+    }
+
+    private void clearMandatoryServiceInputs() {
+        serviceNameTextField.setText("");
+        serviceTypeToggleGroup.selectToggle(null);
+        paymentAmountTextField.setText("");
+        timesPerformedTextField.setText("");
     }
 
     private void onSaleAdded(ShopSale s) {

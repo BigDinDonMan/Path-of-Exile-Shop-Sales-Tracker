@@ -475,16 +475,24 @@
                            <children>
                               <VBox prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1">
                                  <children>
-                                    <Label text="Currently added" />
-                                    <ListView fx:id="currentlyAddedGemsListView" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
+                                    <Label text="Currently added">
+                                       <padding>
+                                          <Insets left="10.0" />
+                                       </padding>
+                                    </Label>
+                                    <ListView fx:id="currentlyAddedGemsListView" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+                                       <VBox.margin>
+                                          <Insets bottom="40.0" left="10.0" right="10.0" />
+                                       </VBox.margin>
+                                    </ListView>
                                  </children>
                               </VBox>
                               <VBox alignment="CENTER">
                                  <children>
-                                    <GridPane VBox.vgrow="ALWAYS">
+                                    <GridPane alignment="CENTER" VBox.vgrow="ALWAYS">
                                       <columnConstraints>
-                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                        <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="1.7976931348623157E308" />
+                                        <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="1.7976931348623157E308" />
                                       </columnConstraints>
                                       <rowConstraints>
                                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -498,43 +506,70 @@
                                                 <Label text="Gem name" />
                                                 <TextField fx:id="gemNameTextField" />
                                              </children>
+                                             <GridPane.margin>
+                                                <Insets left="10.0" right="10.0" />
+                                             </GridPane.margin>
                                           </VBox>
                                           <VBox prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS">
                                              <children>
                                                 <Label text="Gem max level" />
                                                 <TextField fx:id="gemMaxLevelTextField" />
                                              </children>
+                                             <GridPane.margin>
+                                                <Insets left="10.0" right="10.0" />
+                                             </GridPane.margin>
                                           </VBox>
                                           <VBox prefHeight="200.0" prefWidth="100.0" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1">
                                              <children>
                                                 <Label text="Gem quality" />
                                                 <TextField fx:id="gemQualityTextField" />
                                              </children>
+                                             <GridPane.margin>
+                                                <Insets left="10.0" right="10.0" />
+                                             </GridPane.margin>
                                           </VBox>
                                           <VBox prefHeight="200.0" prefWidth="100.0" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2">
                                              <children>
                                                 <Label text="Gem type" />
                                                 <ComboBox fx:id="gemTypeComboBox" maxWidth="1.7976931348623157E308" />
                                              </children>
+                                             <GridPane.margin>
+                                                <Insets left="10.0" right="10.0" />
+                                             </GridPane.margin>
                                           </VBox>
                                           <VBox prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2">
                                              <children>
                                                 <Label text="Gem quality type" />
                                                 <ComboBox fx:id="gemQualityTypeComboBox" maxWidth="1.7976931348623157E308" />
                                              </children>
+                                             <GridPane.margin>
+                                                <Insets left="10.0" right="10.0" />
+                                             </GridPane.margin>
                                           </VBox>
-                                          <CheckBox fx:id="isGemCorruptedCheckBox" mnemonicParsing="false" text="Corrupted?" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                                          <VBox GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="3" GridPane.valignment="CENTER">
+                                          <CheckBox fx:id="isGemCorruptedCheckBox" mnemonicParsing="false" text="Corrupted?" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                             <GridPane.margin>
+                                                <Insets left="10.0" />
+                                             </GridPane.margin>
+                                          </CheckBox>
+                                          <VBox alignment="CENTER" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="3" GridPane.valignment="CENTER">
                                              <children>
-                                                <Label text="Levelling date" />
-                                                <DatePicker fx:id="levellingDatePicker" maxWidth="1.7976931348623157E308" />
+                                                <Label text="Levelling date">
+                                                   <VBox.margin>
+                                                      <Insets right="155.0" />
+                                                   </VBox.margin>
+                                                </Label>
+                                                <DatePicker fx:id="levellingDatePicker" prefWidth="250.0">
+                                                   <VBox.margin>
+                                                      <Insets />
+                                                   </VBox.margin>
+                                                </DatePicker>
                                              </children>
                                           </VBox>
                                        </children>
                                     </GridPane>
                                     <Button mnemonicParsing="false" onAction="#addNewGem" text="Add new gem">
                                        <VBox.margin>
-                                          <Insets bottom="10.0" />
+                                          <Insets bottom="10.0" top="5.0" />
                                        </VBox.margin>
                                     </Button>
                                  </children>

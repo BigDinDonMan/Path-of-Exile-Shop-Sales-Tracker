@@ -449,20 +449,20 @@ public class MainWindowController implements Initializable {
     private void addNewService() {
         var selectedToggle = (CategoryToggleButton)serviceTypeToggleGroup.getSelectedToggle();
         if (selectedToggle == null) {
-            new Alert(Alert.AlertType.ERROR, "Please select a service category").showAndWait();
+            showErrorDialog("Please select a service category");
             return;
         }
         var serviceType = selectedToggle.getServiceCategory();
 
         var serviceName = serviceNameTextField.getText().strip();
         if (serviceName.isBlank()) {
-            new Alert(Alert.AlertType.ERROR, "Please input a valid service name").showAndWait();
+            showErrorDialog("Please input a valid service name");
             return;
         }
 
         var date = serviceDatePicker.getValue();
         if (date == null) {
-            new Alert(Alert.AlertType.ERROR, "Please select a valid date").showAndWait();
+            showErrorDialog("Please select a valid date");
             return;
         }
 
@@ -471,7 +471,7 @@ public class MainWindowController implements Initializable {
         try {
             amount = Integer.parseInt(timesPerformedTextField.getText());
         } catch (NumberFormatException nfe) {
-            new Alert(Alert.AlertType.ERROR,"Please input a valid numeric value").showAndWait();
+            showErrorDialog("Please input a valid numeric value");
             return;
         }
 
@@ -487,33 +487,33 @@ public class MainWindowController implements Initializable {
 
     @FXML
     private void addNewGem() {
-        String gemName = gemNameTextField.getText().strip();
+        var gemName = gemNameTextField.getText().strip();
         if (gemName == null || gemName.isBlank()) {
-            new Alert(Alert.AlertType.ERROR,"Please input a valid gem name").showAndWait();
+            showErrorDialog("Please input a valid gem name");
             return;
         }
 
-        String maxLevelStr = gemMaxLevelTextField.getText();
-        String qualityStr = gemQualityTextField.getText();
-        int maxLevel = maxLevelStr.isBlank() ? 20 : Integer.parseInt(gemMaxLevelTextField.getText());
-        int quality = qualityStr.isBlank() ? 0 : Integer.parseInt(gemQualityTextField.getText());
+        var maxLevelStr = gemMaxLevelTextField.getText();
+        var qualityStr = gemQualityTextField.getText();
+        int maxLevel = maxLevelStr.isBlank() ? 20 : Integer.parseInt(maxLevelStr);
+        int quality = qualityStr.isBlank() ? 0 : Integer.parseInt(qualityStr);
         boolean corrupted = isGemCorruptedCheckBox.isSelected();
         if (!corrupted && quality > 20) {
-            new Alert(Alert.AlertType.ERROR, "Quality can be over 20 only if the gem is corrupted!").showAndWait();
+            showErrorDialog("Quality can be over 20 only if the gem is corrupted!");
             return;
         }
-        GemType gemType = gemTypeComboBox.getSelectionModel().getSelectedItem();
-        GemQualityType gemQualityType = gemQualityTypeComboBox.getSelectionModel().getSelectedItem();
+        var gemType = gemTypeComboBox.getSelectionModel().getSelectedItem();
+        var gemQualityType = gemQualityTypeComboBox.getSelectionModel().getSelectedItem();
         if (gemType == null || gemQualityType == null) {
-            new Alert(Alert.AlertType.ERROR, "Please select a valid quality type and/or gem type").showAndWait();
+            showErrorDialog("Please select a valid quality type and/or gem type");
             return;
         }
-        LocalDate date = levellingDatePicker.getValue();
+        var date = levellingDatePicker.getValue();
         if (date == null) {
-            new Alert(Alert.AlertType.ERROR, "Please select a valid date").showAndWait();
+            showErrorDialog("Please select a valid date");
             return;
         }
-        LevelledSkillGem gem = new LevelledSkillGem(
+        var gem = new LevelledSkillGem(
                 gemName,
                 maxLevel,
                 quality,
@@ -531,34 +531,39 @@ public class MainWindowController implements Initializable {
 
     @FXML
     private void addNewShopSale() {
-        String itemName = itemNameTextField.getText().strip();
+        var itemName = itemNameTextField.getText().strip();
         if (itemName == null || itemName.isBlank()) {
-            new Alert( Alert.AlertType.ERROR, "Please input a valid item name.").showAndWait();
+            showErrorDialog("Please input a valid item name.");
             return;
         }
-        int itemAmount = 1;
+        var itemAmount = 1;
         try {
             itemAmount = Integer.parseInt(itemAmountTextField.getText());
         } catch (NumberFormatException nfe) {
-            new Alert(Alert.AlertType.ERROR, "Please input a numeric input UwU").showAndWait();
+            showErrorDialog("Please input a numeric value.");
             return;
         }
-        List<ReceivedCurrency> currencies = new ArrayList<>(currenciesListView.getItems());
+        var currencies = new ArrayList<>(currenciesListView.getItems());
         if (currencies.isEmpty()) {
-            new Alert(Alert.AlertType.ERROR, "You cannot sell an item for free. Please select valid currencies.").showAndWait();
+            showErrorDialog("You cannot sell an item for free. Please select valid currencies.");
             return;
         }
-        ItemCategory category = itemCategoryComboBox.getSelectionModel().getSelectedItem();
+        var category = itemCategoryComboBox.getSelectionModel().getSelectedItem();
         if (category == null) {
-            new Alert(Alert.AlertType.ERROR, "Please select a valid item category").showAndWait();
+            showErrorDialog("Please select a valid item category");
             return;
         }
-        LocalDate date = saleDatePicker.getValue();
+        var date = saleDatePicker.getValue();
         if (date == null) {
-            new Alert(Alert.AlertType.ERROR, "Please select a valid date from the date picker.").showAndWait();
+            showErrorDialog("Please select a valid date from the date picker.");
             return;
         }
-        var sale = new ShopSale(0L, date, currencies, new SoldItem(itemName, itemAmount, category));
+        var sale = new ShopSale(
+                0L,
+                date,
+                currencies,
+                new SoldItem(itemName, itemAmount, category)
+        );
         recentlyAddedSalesList.add(sale);
         shopSalesListView.getItems().add(sale);
         unsavedChangesPresent.setValue(true);
@@ -566,8 +571,9 @@ public class MainWindowController implements Initializable {
         clearMandatorySaleInputs();
     }
 
-    private void showAlert(String message) {
-
+    private void showErrorDialog(String message) {
+        var errorDialog = new Alert(Alert.AlertType.ERROR, message);
+        errorDialog.showAndWait();
     }
 
     @FXML
@@ -598,8 +604,7 @@ public class MainWindowController implements Initializable {
 
         saveService.setOnFailed(e -> {
             saveService.cancel();
-            Alert a = new Alert(Alert.AlertType.ERROR, "Error while saving to database: \n" + e.getSource().getMessage());
-            a.showAndWait();
+            showErrorDialog("Error while saving to database: \n" + e.getSource().getMessage());
             progressDialog.close();
         });
 
@@ -658,13 +663,13 @@ public class MainWindowController implements Initializable {
             Platform.runLater(() -> {
                 shopSalesListView.getItems().remove(s);
             });
-            unsavedChangesPresent.setValue(!recentlyAddedSalesList.isEmpty());
+//            unsavedChangesPresent.setValue(!recentlyAddedSalesList.isEmpty());
         });
         command.addRedoCallback(() -> {
             Platform.runLater(() -> {
                 shopSalesListView.getItems().add(s);
             });
-            unsavedChangesPresent.setValue(true);
+//            unsavedChangesPresent.setValue(true);
         });
         undoCommands.add(command);
     }
@@ -685,12 +690,14 @@ public class MainWindowController implements Initializable {
                 gemsListView.getItems().add(lsg);
                 currentlyAddedGemsListView.getItems().add(lsg);
             });
+//            unsavedChangesPresent.setValue();
         });
         command.addUndoCallback(() -> {
             Platform.runLater(() -> {
                 gemsListView.getItems().remove(lsg);
                 currentlyAddedGemsListView.getItems().remove(lsg);
             });
+//            unsavedChangesPresent.setValue();
         });
         undoCommands.add(command);
     }
@@ -703,11 +710,13 @@ public class MainWindowController implements Initializable {
             Platform.runLater(() -> {
                 servicesListView.getItems().remove(service);
             });
+//            unsavedChangesPresent.setValue();
         });
         command.addRedoCallback(() -> {
             Platform.runLater(() -> {
                 servicesListView.getItems().add(service);
             });
+//            unsavedChangesPresent.setValue();
         });
         undoCommands.add(command);
     }

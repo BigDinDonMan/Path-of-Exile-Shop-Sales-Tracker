@@ -124,7 +124,7 @@ public class ApplicationDatabase {
     public static List<String> fetchGemData() {
         try (var s = getNewSession()) {
             Transaction t = s.beginTransaction();
-            String hqlQuery = "select distinct g.gemName || ', ' || lower(g.gemType) || ', " +
+            var hqlQuery = "select distinct g.gemName || ', ' || lower(g.gemType) || ', " +
                     "max level: ' || g.maxLevel from LevelledSkillGem g order by g.gemName";
             Query<String> query = s.createQuery(hqlQuery);
             List<String> result = query.getResultList();

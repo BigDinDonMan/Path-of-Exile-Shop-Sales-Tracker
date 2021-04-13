@@ -13,8 +13,6 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 
 //todo: add splash screen
-//todo: add navigation to wiki on ctrl+clicking unique items or skill gems
-//todo: add form for levelled gems and harvest crafts
 public class TrackerApp extends javafx.application.Application {
     @Override
     public void start(Stage stage) throws Exception {

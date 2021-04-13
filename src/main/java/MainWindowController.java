@@ -19,6 +19,7 @@ import javafx.stage.FileChooser;
 import org.controlsfx.dialog.ProgressDialog;
 import poedatatracker.core.ApplicationDatabase;
 import poedatatracker.core.GlobalData;
+import poedatatracker.core.SaleStatistics;
 import poedatatracker.core.commands.AddToListCommand;
 import poedatatracker.core.models.*;
 import poedatatracker.gui.controls.CategoryToggleButton;
@@ -187,6 +188,7 @@ public class MainWindowController implements Initializable {
         setUpNewServiceForm();
         setUpNewGemForm();
         setUpGemAutoCompleter();
+        SaleStatistics.calculate();
     }
 
     //<editor-fold desc="setup methods">
@@ -429,7 +431,7 @@ public class MainWindowController implements Initializable {
 
     @FXML
     private void addNewCurrency() {
-        if (!currencyAmountTextField.getText().isBlank() || currencyComboBox.getSelectionModel().getSelectedIndex() != -1) {
+        if (!currencyAmountTextField.getText().isBlank() && currencyComboBox.getSelectionModel().getSelectedIndex() != -1) {
             int amount = Integer.parseInt(currencyAmountTextField.getText());
             String name = currencyComboBox.getSelectionModel().getSelectedItem();
             currenciesListView.getItems().add(new ReceivedCurrency(name, amount));
@@ -438,7 +440,7 @@ public class MainWindowController implements Initializable {
 
     @FXML
     private void addNewPayment() {
-        if (!paymentAmountTextField.getText().isBlank() || paymentsComboBox.getSelectionModel().getSelectedIndex() != -1) {
+        if (!paymentAmountTextField.getText().isBlank() && paymentsComboBox.getSelectionModel().getSelectedIndex() != -1) {
             int amount = Integer.parseInt(paymentAmountTextField.getText());
             String name = paymentsComboBox.getSelectionModel().getSelectedItem();
             paymentsListView.getItems().add(new PoEServicePayment(name, amount));
@@ -663,13 +665,13 @@ public class MainWindowController implements Initializable {
             Platform.runLater(() -> {
                 shopSalesListView.getItems().remove(s);
             });
-//            unsavedChangesPresent.setValue(!recentlyAddedSalesList.isEmpty());
+            unsavedChangesPresent.setValue(addedRecordsPresent());
         });
         command.addRedoCallback(() -> {
             Platform.runLater(() -> {
                 shopSalesListView.getItems().add(s);
             });
-//            unsavedChangesPresent.setValue(true);
+            unsavedChangesPresent.setValue(true);
         });
         undoCommands.add(command);
     }
@@ -690,14 +692,14 @@ public class MainWindowController implements Initializable {
                 gemsListView.getItems().add(lsg);
                 currentlyAddedGemsListView.getItems().add(lsg);
             });
-//            unsavedChangesPresent.setValue();
+            unsavedChangesPresent.setValue(true);
         });
         command.addUndoCallback(() -> {
             Platform.runLater(() -> {
                 gemsListView.getItems().remove(lsg);
                 currentlyAddedGemsListView.getItems().remove(lsg);
             });
-//            unsavedChangesPresent.setValue();
+            unsavedChangesPresent.setValue(addedRecordsPresent());
         });
         undoCommands.add(command);
     }
@@ -710,15 +712,19 @@ public class MainWindowController implements Initializable {
             Platform.runLater(() -> {
                 servicesListView.getItems().remove(service);
             });
-//            unsavedChangesPresent.setValue();
+            unsavedChangesPresent.setValue(addedRecordsPresent());
         });
         command.addRedoCallback(() -> {
             Platform.runLater(() -> {
                 servicesListView.getItems().add(service);
             });
-//            unsavedChangesPresent.setValue();
+            unsavedChangesPresent.setValue(true);
         });
         undoCommands.add(command);
+    }
+
+    private boolean addedRecordsPresent() {
+        return !recentlyAddedGemsList.isEmpty() || !recentlyAddedServicesList.isEmpty() || !recentlyAddedSalesList.isEmpty();
     }
 
     @FXML

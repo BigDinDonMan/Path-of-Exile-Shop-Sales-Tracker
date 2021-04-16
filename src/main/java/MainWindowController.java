@@ -19,7 +19,6 @@ import javafx.stage.FileChooser;
 import org.controlsfx.dialog.ProgressDialog;
 import poedatatracker.core.ApplicationDatabase;
 import poedatatracker.core.GlobalData;
-import poedatatracker.core.SaleStatistics;
 import poedatatracker.core.commands.AddToListCommand;
 import poedatatracker.core.models.*;
 import poedatatracker.gui.controls.CategoryToggleButton;
@@ -188,7 +187,7 @@ public class MainWindowController implements Initializable {
         setUpNewServiceForm();
         setUpNewGemForm();
         setUpGemAutoCompleter();
-        SaleStatistics.calculate();
+//        SaleStatistics.calculate();
     }
 
     //<editor-fold desc="setup methods">

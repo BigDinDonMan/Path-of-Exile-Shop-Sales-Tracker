@@ -1,8 +1,9 @@
-package poedatatracker.core;
+package poedatatracker.core.statistics;
 
 import lombok.AllArgsConstructor;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
+import poedatatracker.core.ApplicationDatabase;
 import poedatatracker.core.models.ItemCategory;
 import poedatatracker.core.models.ReceivedCurrency;
 

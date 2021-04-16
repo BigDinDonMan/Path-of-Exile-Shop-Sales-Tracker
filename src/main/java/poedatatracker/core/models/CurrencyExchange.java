@@ -4,28 +4,31 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 
 @Entity
 @NoArgsConstructor
+@Getter
 public class CurrencyExchange {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "")
+    @Column(name = "exchange_id")
     private long id;
 
     @Embedded
     @AttributeOverrides({
-        @AttributeOverride(name = "currencyName", column = @Column(name = "")),
-        @AttributeOverride(name = "amount", column = @Column(name = ""))
+        @AttributeOverride(name = "currencyName", column = @Column(name = "paid_currency_name")),
+        @AttributeOverride(name = "amount", column = @Column(name = "paid_currency_amount"))
     })
-    @Getter
     private ExchangedCurrency paidCurrency;
 
     @Embedded
     @AttributeOverrides({
-        @AttributeOverride(name = "currencyName", column = @Column(name = "")),
-        @AttributeOverride(name = "amount", column = @Column(name = ""))
+        @AttributeOverride(name = "currencyName", column = @Column(name = "received_currency_name")),
+        @AttributeOverride(name = "amount", column = @Column(name = "received_currency_amount"))
     })
-    @Getter
     private ExchangedCurrency receivedCurrency;
+
+    @Column(name = "exchange_date")
+    private LocalDate exchangeDate;
 }

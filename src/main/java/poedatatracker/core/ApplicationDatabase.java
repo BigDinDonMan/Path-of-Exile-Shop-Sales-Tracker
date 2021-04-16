@@ -39,7 +39,8 @@ public class ApplicationDatabase {
                 SoldItem.class,
                 PoEService.class,
                 PoEServicePayment.class,
-                LevelledSkillGem.class
+                LevelledSkillGem.class,
+                CurrencyExchange.class
         );
         annotatedClasses.forEach(dbConfig::addAnnotatedClass);
         var registry = new StandardServiceRegistryBuilder().applySettings(dbConfig.getProperties()).build();

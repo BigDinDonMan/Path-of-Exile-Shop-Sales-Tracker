@@ -446,7 +446,19 @@
                            <children>
                               <VBox alignment="BOTTOM_CENTER" layoutX="5.0" layoutY="98.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                  <children>
-                                    <HBox maxHeight="1.7976931348623157E308" prefHeight="9.0" prefWidth="997.0" VBox.vgrow="ALWAYS" />
+                                    <HBox alignment="CENTER_LEFT" maxHeight="1.7976931348623157E308" prefHeight="9.0" prefWidth="997.0" VBox.vgrow="ALWAYS">
+                                       <children>
+                                          <ComboBox prefWidth="150.0">
+                                             <HBox.margin>
+                                                <Insets left="25.0" right="15.0" />
+                                             </HBox.margin>
+                                          </ComboBox>
+                                          <Button mnemonicParsing="false" text="Clear filters">
+                                             <HBox.margin>
+                                                <Insets left="15.0" />
+                                             </HBox.margin>
+                                          </Button>
+                                       </children></HBox>
                                     <ListView fx:id="servicesListView" maxHeight="1.7976931348623157E308" prefHeight="224.0" prefWidth="987.0" VBox.vgrow="ALWAYS">
                                        <VBox.margin>
                                           <Insets bottom="5.0" left="5.0" right="5.0" />
@@ -486,6 +498,9 @@
                                        </VBox.margin>
                                     </ListView>
                                  </children>
+                                 <GridPane.margin>
+                                    <Insets bottom="5.0" left="5.0" right="5.0" top="10.0" />
+                                 </GridPane.margin>
                               </VBox>
                               <VBox alignment="CENTER">
                                  <children>
@@ -573,6 +588,9 @@
                                        </VBox.margin>
                                     </Button>
                                  </children>
+                                 <GridPane.margin>
+                                    <Insets bottom="5.0" left="5.0" right="5.0" top="10.0" />
+                                 </GridPane.margin>
                               </VBox>
                            </children>
                         </GridPane>
@@ -585,6 +603,7 @@
                      </children>
                   </VBox>
                </content></Tab>
+            <Tab text="Currency exchanges"></Tab>
          </tabs>
       </TabPane>
    </children>

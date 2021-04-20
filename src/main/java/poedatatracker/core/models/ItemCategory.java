@@ -54,7 +54,6 @@ public enum ItemCategory implements DecoratedEnum {
         categoryColors.put(MAP_FRAGMENT, purpleColor);
         categoryColors.put(LEGION_EMBLEM, generalColor);
         categoryColors.put(DIVINATION_CARD, Color.rgb(0,17,73));
-//        categoryColors.put(ESSENCE, Color.rgb(16,195,249));
         categoryColors.put(OTHER, DEFAULT_COLOR);
     }
 

@@ -1,12 +1,12 @@
 import com.google.gson.Gson;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import poedatatracker.core.models.ItemCategory;
 import poedatatracker.core.models.ReceivedCurrency;
 import poedatatracker.core.models.ShopSale;
 import poedatatracker.core.models.SoldItem;
-import poedatatracker.util.LogFileLoader;
+import poedatatracker.util.loaders.LogFileLoader;
 
 import java.io.File;
 import java.io.IOException;
@@ -24,7 +24,7 @@ public class LogFileLoaderTests {
     private static ShopSaleComparer comparer;
     private static List<String> currencies;
 
-    @BeforeClass
+    @BeforeAll
     public static void initializeResources() throws IOException {
         Gson g = new Gson();
         String path = System.getProperty("user.dir") + File.separator + "resources" + File.separator + "currencies.json";
@@ -61,11 +61,11 @@ public class LogFileLoaderTests {
                         new ReceivedCurrency("Chaos Orb", 5)
                 )
         );
-        Assert.assertEquals(expected.size(), sales.size());
+        Assertions.assertEquals(expected.size(), sales.size());
         for (int i = 0; i < sales.size(); ++i) {
             var s1 = sales.get(i);
             var s2 = expected.get(i);
-            Assert.assertTrue(comparer.salesEqual(s1, s2));
+            Assertions.assertTrue(comparer.salesEqual(s1, s2));
         }
     }
 

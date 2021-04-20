@@ -25,13 +25,10 @@ import poedatatracker.gui.controls.CategoryToggleButton;
 import poedatatracker.gui.display.*;
 import poedatatracker.gui.dialogs.LoadedShopSaleViewDialog;
 import poedatatracker.util.ItemCategoryToNameMapper;
-import poedatatracker.util.LogFileLoader;
+import poedatatracker.util.loaders.LogFileLoader;
 import poedatatracker.util.IntegerTextValidator;
 import poedatatracker.util.SaveDataToDatabaseTask;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
 import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;

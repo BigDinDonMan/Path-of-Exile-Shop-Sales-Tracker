@@ -1,4 +1,4 @@
-package poedatatracker.util;
+package poedatatracker.util.loaders;
 
 import poedatatracker.core.models.ItemCategory;
 import poedatatracker.core.models.ReceivedCurrency;

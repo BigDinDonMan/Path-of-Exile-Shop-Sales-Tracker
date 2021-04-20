@@ -24,7 +24,7 @@ public class LevelledSkillGem {
     @Column(name = "max_level")
     private int maxLevel;
 
-    @Column
+    @Column(name = "quality")
     private int quality;
 
     @Column(name = "quality_type")

@@ -29,6 +29,9 @@ import poedatatracker.util.LogFileLoader;
 import poedatatracker.util.IntegerTextValidator;
 import poedatatracker.util.SaveDataToDatabaseTask;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
@@ -39,6 +42,12 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 //todo: add item category icons in combobox
+//todo: add replacing the words in parentheses when opening url in browser (e.g. (red) in "combat focus (red)" or "very large ring" in thread of hope (very large ring)
+//todo: start thinking about stats display
+//todo: add currency exchange display and form
+//fixme: create separate user controls for each of the forms (sales, services, gems and exchanges)
+//todo: add more currencies to resources and more currency images
+//fixme: disable hibernate logs
 public class MainWindowController implements Initializable {
 
     @FXML
@@ -187,7 +196,6 @@ public class MainWindowController implements Initializable {
         setUpNewServiceForm();
         setUpNewGemForm();
         setUpGemAutoCompleter();
-//        SaleStatistics.calculate();
     }
 
     //<editor-fold desc="setup methods">
@@ -405,6 +413,8 @@ public class MainWindowController implements Initializable {
                 setText(null);
             }
         });
+
+        servicesListView.getItems().addAll(ApplicationDatabase.fetchAllServices());
     }
 
     private void setUpNewGemForm() {
@@ -417,6 +427,7 @@ public class MainWindowController implements Initializable {
         gemTypeComboBox.getItems().addAll(GemType.values());
         gemTypeComboBox.setCellFactory(callback -> new SimpleEnumListCell<GemType>());
         gemTypeComboBox.setButtonCell(new SimpleEnumListCell<GemType>());
+        gemsListView.getItems().addAll(ApplicationDatabase.fetchAllGems());
     }
     //</editor-fold>
 

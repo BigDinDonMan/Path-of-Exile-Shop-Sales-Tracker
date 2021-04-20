@@ -2,6 +2,8 @@ package poedatatracker.core.models;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -9,6 +11,7 @@ import java.io.Serializable;
 @Embeddable
 @Getter
 @AllArgsConstructor
+@NoArgsConstructor
 public class ExchangedCurrency implements Currency, Serializable {
     private String currencyName;
     private int amount;

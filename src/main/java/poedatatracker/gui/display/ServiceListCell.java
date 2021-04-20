@@ -38,7 +38,7 @@ public class ServiceListCell extends ListCell<PoEService> {
 
         var serviceTypeInfoParent = new HBox();
         var serviceLabel = new Text("Service type: ");
-        var serviceTypeLabel = new Text(item.getServiceType().name());
+        var serviceTypeLabel = new Text(item.getServiceType().prettifyName());
         serviceTypeLabel.setStyle("-fx-font-weight: bold;");
         serviceTypeInfoParent.getChildren().addAll(serviceLabel, serviceTypeLabel);
 

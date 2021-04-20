@@ -49,6 +49,9 @@ public class ShopSaleListCell extends ListCell<ShopSale> {
                 if (sale != null && searchableCategories.contains(sale.getItem().getCategory())) {
                     var mapper = new ItemCategoryToNameMapper();
                     String name = mapper.apply(sale.getItem().getName(), sale.getItem().getCategory());
+                    if (sale.getItem().getCategory() == ItemCategory.UNIQUE) {
+                        name = name.replaceAll("\\(.*?\\)", "").strip();
+                    }
                     String urlEncodedName = URLEncoder.encode(name.replace(' ', '_'), StandardCharsets.UTF_8);
                     try {
                         openInBrowser(urlEncodedName);

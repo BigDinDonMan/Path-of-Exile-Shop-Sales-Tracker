@@ -40,7 +40,8 @@ public class ApplicationDatabase {
                 PoEService.class,
                 PoEServicePayment.class,
                 LevelledSkillGem.class,
-                CurrencyExchange.class
+                CurrencyExchange.class,
+                ExchangedCurrency.class
         );
         annotatedClasses.forEach(dbConfig::addAnnotatedClass);
         var registry = new StandardServiceRegistryBuilder().applySettings(dbConfig.getProperties()).build();
@@ -86,6 +87,32 @@ public class ApplicationDatabase {
         transaction.commit();
         session.close();
         return sales;
+    }
+
+    public static List<PoEService> fetchAllServices() {
+        try (var s = getNewSession()) {
+            var t = s.beginTransaction();
+            CriteriaBuilder cb = s.getCriteriaBuilder();
+            CriteriaQuery<PoEService> query = cb.createQuery(PoEService.class);
+            Root<PoEService> root = query.from(PoEService.class);
+            query.select(root).orderBy(cb.asc(root.get("serviceDate")));
+            var services = s.createQuery(query).getResultList();
+            t.commit();
+            return services;
+        }
+    }
+
+    public static List<LevelledSkillGem> fetchAllGems() {
+        try (var s = getNewSession()) {
+            var t = s.beginTransaction();
+            CriteriaBuilder cb = s.getCriteriaBuilder();
+            CriteriaQuery<LevelledSkillGem> query = cb.createQuery(LevelledSkillGem.class);
+            Root<LevelledSkillGem> root = query.from(LevelledSkillGem.class);
+            query.select(root).orderBy(cb.asc(root.get("levellingDate")));
+            var gems = s.createQuery(query).getResultList();
+            t.commit();
+            return gems;
+        }
     }
 
     public static List<ShopSale> fetchSalesMatching(LocalDate predicateDate, ItemCategory predicateCategory) {

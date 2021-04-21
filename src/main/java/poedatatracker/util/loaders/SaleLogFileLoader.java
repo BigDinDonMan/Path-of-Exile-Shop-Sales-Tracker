@@ -95,7 +95,6 @@ public class SaleLogFileLoader {
         }
         var item = new SoldItem(name, amount, category);
         var sale = new ShopSale(0L, saleDate, currencies, item);
-        item.setSale(sale);
         currencies.forEach(c -> c.setSale(sale));
         return sale;
     }

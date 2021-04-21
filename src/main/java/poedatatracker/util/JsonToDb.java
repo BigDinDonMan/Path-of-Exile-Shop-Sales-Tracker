@@ -30,11 +30,8 @@ public class JsonToDb {
             t = dbSession.beginTransaction();
             final var transaction = t;
             sales.forEach(sale -> {
-                var item = sale.getItem();
-                item.setSale(sale);
                 var currencies = sale.getCurrencies();
                 dbSession.save(sale);
-                dbSession.save(item);
                 currencies.forEach(c -> {
                     c.setSale(sale);
                     dbSession.save(c);

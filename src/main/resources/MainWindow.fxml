@@ -30,7 +30,7 @@
               <menus>
                 <Menu mnemonicParsing="false" text="File">
                      <items>
-                        <MenuItem mnemonicParsing="false" onAction="#saveDbData" text="Save sales">
+                        <MenuItem mnemonicParsing="false" onAction="#saveDbData" text="Save inputs">
                            <accelerator>
                               <KeyCodeCombination alt="UP" code="S" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                            </accelerator>

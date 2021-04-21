@@ -16,12 +16,12 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-public class LogFileLoader {
+public class SaleLogFileLoader {
 
     private List<String> currencyNames;
     private String delimiter;
 
-    public LogFileLoader(String delimiter, Collection<? extends String> currencyNames) {
+    public SaleLogFileLoader(String delimiter, Collection<? extends String> currencyNames) {
         this.delimiter = delimiter;
         this.currencyNames = new ArrayList<>(currencyNames);
     }

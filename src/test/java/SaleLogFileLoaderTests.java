@@ -6,7 +6,7 @@ import poedatatracker.core.models.ItemCategory;
 import poedatatracker.core.models.ReceivedCurrency;
 import poedatatracker.core.models.ShopSale;
 import poedatatracker.core.models.SoldItem;
-import poedatatracker.util.loaders.LogFileLoader;
+import poedatatracker.util.loaders.SaleLogFileLoader;
 
 import java.io.File;
 import java.io.IOException;
@@ -17,10 +17,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class LogFileLoaderTests {
+public class SaleLogFileLoaderTests {
 
     private static final String TEST_FILES_DIR = System.getProperty("user.dir") + File.separator + "test-files" + File.separator;
-    private static LogFileLoader loader;
+    private static SaleLogFileLoader loader;
     private static ShopSaleComparer comparer;
     private static List<String> currencies;
 
@@ -36,7 +36,7 @@ public class LogFileLoaderTests {
 
     @Test
     public void logFileLoaderTest_shouldSucceed_withTestFile1_everythingFine() throws IOException {
-        loader = new LogFileLoader(",", currencies);
+        loader = new SaleLogFileLoader(",", currencies);
         var sales = loader.load(TEST_FILES_DIR + "shop_transactions_25_01_2021.txt");
         var date = LocalDate.of(2021, 1, 25);
         var expected = Arrays.asList(

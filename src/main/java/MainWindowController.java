@@ -25,7 +25,7 @@ import poedatatracker.gui.controls.CategoryToggleButton;
 import poedatatracker.gui.display.*;
 import poedatatracker.gui.dialogs.LoadedShopSaleViewDialog;
 import poedatatracker.util.ItemCategoryToNameMapper;
-import poedatatracker.util.loaders.LogFileLoader;
+import poedatatracker.util.loaders.SaleLogFileLoader;
 import poedatatracker.util.IntegerTextValidator;
 import poedatatracker.util.SaveDataToDatabaseTask;
 
@@ -772,7 +772,7 @@ public class MainWindowController implements Initializable {
         fc.getExtensionFilters().add(txtFilter);
         var files = fc.showOpenMultipleDialog(root.getScene().getWindow());
         if (files != null && !files.isEmpty()) {
-            var fileLoader = new LogFileLoader(",", GlobalData.getCurrencies());
+            var fileLoader = new SaleLogFileLoader(",", GlobalData.getCurrencies());
             var sales = new ArrayList<ShopSale>();
             files.forEach(f -> {
                 try {

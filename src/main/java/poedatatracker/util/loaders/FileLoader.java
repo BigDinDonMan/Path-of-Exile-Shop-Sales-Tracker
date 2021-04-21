@@ -1,4 +1,7 @@
 package poedatatracker.util.loaders;
 
-public interface FileLoader {
+import java.util.List;
+
+public interface FileLoader<T> {
+    List<T> loadLog(String logPath);
 }

@@ -3,8 +3,6 @@ package poedatatracker.core.models;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import poedatatracker.core.converters.CategoryToStringConverter;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -19,7 +17,7 @@ public class SoldItem implements Serializable {
 
     private int amount;
 
-    @Convert(converter = CategoryToStringConverter.class)
+    @Enumerated(value = EnumType.STRING)
     private ItemCategory category;
 
     @Override

@@ -16,8 +16,11 @@ import java.util.Objects;
 @Table(name = "received_currencies")
 public class ReceivedCurrency implements Serializable, Currency {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "currency_id")
+    @GeneratedValue(generator = "SQLITE-RECEIVED-CURRENCIES")
+    @TableGenerator(name = "SQLITE-RECEIVED-CURRENCIES",pkColumnName = "name",
+            pkColumnValue = "received_currencies", table = "sqlite_sequence",
+            valueColumnName = "seq")
     private long id;
 
     @Column(name = "currency_name")

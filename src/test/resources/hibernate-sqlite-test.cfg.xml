@@ -13,19 +13,6 @@
         <property name="hibernate.connection.url">
             jdbc:sqlite:./poe-data-DEV.db
         </property>
-
-<!--        <property name="hibernate.connection.url">-->
-<!--            jdbc:mysql://localhost/poe_shop_sales_development?serverTimezone=UTC-->
-<!--        </property>-->
-
-<!--        <property name="hibernate.connection.username">-->
-<!--            poe_sales_admin-->
-<!--        </property>-->
-
-<!--        <property name="hibernate.connection.password">-->
-<!--            pathofexile-->
-<!--        </property>-->
-
         <property name="hibernate.current_session_context_class">thread</property>
     </session-factory>
 </hibernate-configuration>

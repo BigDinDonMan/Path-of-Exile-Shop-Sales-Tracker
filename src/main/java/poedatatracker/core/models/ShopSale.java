@@ -10,10 +10,10 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 @Getter
-@AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name = "shop_sales")
@@ -44,6 +44,14 @@ public class ShopSale implements Serializable, Comparable<ShopSale> {
         this.item = item;
         this.saleDate = date;
         this.currencies = new ArrayList<>(Arrays.asList(currencies));
+        this.currencies.forEach(c -> c.setSale(this));
+    }
+
+    public ShopSale(SoldItem item, LocalDate date, Collection<? extends ReceivedCurrency> currencies) {
+        this.item = item;
+        this.saleDate = date;
+        this.currencies = new ArrayList<>(currencies);
+        this.currencies.forEach(c -> c.setSale(this));
     }
 
     @Override

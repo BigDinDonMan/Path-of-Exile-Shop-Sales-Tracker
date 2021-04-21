@@ -61,7 +61,9 @@ public class SQLiteConnectionTests {
                 new ReceivedCurrency("Chaos Orb", 40),
                 new ReceivedCurrency("Exalted Orb", 3)
         );
+        var currencies = testSale.getCurrencies();
         currentSession.save(testSale);
+        currencies.forEach(currentSession::save);
         t.commit();
     }
 
@@ -76,6 +78,5 @@ public class SQLiteConnectionTests {
         query.select(root).orderBy(cb.asc(root.get("saleDate")));
         var selected = currentSession.createQuery(query).getResultList();
         t.commit();
-        System.out.println("");
     }
 }

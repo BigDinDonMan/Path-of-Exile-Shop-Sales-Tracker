@@ -17,7 +17,9 @@ import java.util.List;
 public class PoEService {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(generator = "SQLITE-POE-SERVICE")
+    @TableGenerator(name = "SQLITE-POE-SERVICE", pkColumnName = "name", pkColumnValue = "poe_services",
+            valueColumnName = "seq", table = "sqlite_sequence")
     @Column(name = "service_id")
     private long id;
 

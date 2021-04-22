@@ -14,7 +14,9 @@ import java.io.Serializable;
 public class PoEServicePayment implements Serializable, Currency {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(generator = "SQLITE-POE-SERVICE-PAYMENT")
+    @TableGenerator(name = "SQLITE-POE-SERVICE-PAYMENT", pkColumnName = "name", pkColumnValue = "poe_services_payments",
+            table = "sqlite_sequence", valueColumnName = "seq")
     @Column(name = "payment_id")
     private long id;
 

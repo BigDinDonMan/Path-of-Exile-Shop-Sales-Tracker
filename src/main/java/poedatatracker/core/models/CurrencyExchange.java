@@ -12,7 +12,9 @@ import java.time.LocalDate;
 @Getter
 public class CurrencyExchange {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(generator = "SQLITE-CURRENCY-EXCHANGES")
+    @TableGenerator(name = "SQLITE-CURRENCY-EXCHANGES", pkColumnName = "name", pkColumnValue = "currency_exchanges",
+            table = "sqlite_sequence", valueColumnName = "seq")
     @Column(name = "exchange_id")
     private long id;
 

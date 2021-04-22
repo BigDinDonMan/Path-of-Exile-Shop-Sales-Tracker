@@ -70,7 +70,7 @@ public class SQLiteConnectionTests {
 
     //NOTES: sale date is of type INTEGER in the database, its stored as number of seconds since EPOCH
     @Test
-    public void select_singleSale() {
+    public void select_allSales() {
         var t = currentSession.beginTransaction();
         var cb = currentSession.getCriteriaBuilder();
         var query = cb.createQuery(ShopSale.class);

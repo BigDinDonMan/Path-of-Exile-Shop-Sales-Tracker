@@ -14,7 +14,9 @@ import java.util.Objects;
 @Getter
 public class LevelledSkillGem {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(generator = "SQLITE-LEVELLED-GEMS")
+    @TableGenerator(name = "SQLITE-LEVELLED-GEMS", pkColumnValue = "levelled_gems", pkColumnName = "name",
+            valueColumnName = "seq", table = "sqlite_sequence")
     @Column(name = "gem_id")
     private long id;
 

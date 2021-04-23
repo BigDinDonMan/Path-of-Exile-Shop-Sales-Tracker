@@ -5,6 +5,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
+import org.hibernate.service.ServiceRegistry;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.query.Query;
 import poedatatracker.core.models.*;
@@ -44,7 +45,7 @@ public class ApplicationDatabase {
                 ExchangedCurrency.class
         );
         annotatedClasses.forEach(dbConfig::addAnnotatedClass);
-        var registry = new StandardServiceRegistryBuilder().applySettings(dbConfig.getProperties()).build();
+        ServiceRegistry registry = new StandardServiceRegistryBuilder().applySettings(dbConfig.getProperties()).build();
         sessionFactory = dbConfig.buildSessionFactory(registry);
     }
 

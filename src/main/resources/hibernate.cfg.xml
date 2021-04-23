@@ -3,31 +3,16 @@
 <hibernate-configuration>
     <session-factory>
         <property name="hibernate.dialect">
-            org.hibernate.dialect.MySQLDialect
+            org.hibernate.dialect.SQLiteDialect
         </property>
 
         <property name="hibernate.connection.driver_class">
-            com.mysql.cj.jdbc.Driver
+            org.sqlite.JDBC
         </property>
 
         <property name="hibernate.connection.url">
-            jdbc:mysql://localhost/poe_shop_sales?serverTimezone=UTC
+            jdbc:sqlite:./poe-data.db
         </property>
-
-        <property name="hibernate.connection.username">
-            poe_sales_admin
-        </property>
-
-        <property name="hibernate.connection.password">
-            pathofexile
-        </property>
-
         <property name="hibernate.current_session_context_class">thread</property>
-        <property name="hibernate.connection.provider_class">org.hibernate.connection.C3P0ConnectionProvider</property>
-        <property name="hibernate.connection.release_mode">after_statement</property>
-
-        <property name="hibernate.connection.autoReconnect">true</property>
-        <property name="hibernate.connection.autoReconnectForPools">true</property>
-        <property name="hibernate.c3p0.validate">true</property>
     </session-factory>
 </hibernate-configuration>

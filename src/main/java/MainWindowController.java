@@ -568,10 +568,9 @@ public class MainWindowController implements Initializable {
             return;
         }
         var sale = new ShopSale(
-                0L,
+                new SoldItem(itemName, itemAmount, category),
                 date,
-                currencies,
-                new SoldItem(itemName, itemAmount, category)
+                currencies
         );
         recentlyAddedSalesList.add(sale);
         shopSalesListView.getItems().add(sale);

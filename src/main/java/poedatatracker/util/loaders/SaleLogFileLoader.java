@@ -94,8 +94,7 @@ public class SaleLogFileLoader {
             });
         }
         var item = new SoldItem(name, amount, category);
-        var sale = new ShopSale(0L, saleDate, currencies, item);
-        item.setSale(sale);
+        var sale = new ShopSale(item, saleDate, currencies);
         currencies.forEach(c -> c.setSale(sale));
         return sale;
     }

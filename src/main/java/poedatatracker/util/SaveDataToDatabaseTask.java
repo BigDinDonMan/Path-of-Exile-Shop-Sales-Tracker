@@ -71,11 +71,8 @@ public class SaveDataToDatabaseTask extends Task<Boolean> {
             var currentWork = new AtomicInteger(0);
             final int totalWork = sales.size();
             sales.forEach(sale -> {
-                var item = sale.getItem();
                 var currencies = sale.getCurrencies();
-                item.setSale(sale);
                 session.save(sale);
-                session.save(item);
                 currencies.forEach(c -> {
                     c.setSale(sale);
                     session.save(c);

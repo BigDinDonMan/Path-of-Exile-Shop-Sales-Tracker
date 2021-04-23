@@ -10,17 +10,20 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 @Getter
-@AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name = "shop_sales")
 public class ShopSale implements Serializable, Comparable<ShopSale> {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "sale_id")
+    @GeneratedValue(generator = "SQLITE-SHOP-SALES")
+    @TableGenerator(name = "SQLITE-SHOP-SALES", pkColumnName = "name",
+            pkColumnValue = "shop_sales", table = "sqlite_sequence",
+            valueColumnName = "seq")
     private long id;
 
     @Column(name = "sale_date")
@@ -29,13 +32,26 @@ public class ShopSale implements Serializable, Comparable<ShopSale> {
     @OneToMany(mappedBy = "sale", fetch = FetchType.EAGER)
     private List<ReceivedCurrency> currencies;
 
-    @OneToOne(mappedBy = "sale", fetch = FetchType.EAGER)
+    @Embedded
+    @AttributeOverrides({
+            @AttributeOverride(name = "name", column = @Column(name = "item_name")),
+            @AttributeOverride(name = "amount", column = @Column(name = "item_amount")),
+            @AttributeOverride(name = "category", column = @Column(name = "item_category"))
+    })
     private SoldItem item;
 
     public ShopSale(SoldItem item, LocalDate date, ReceivedCurrency... currencies) {
         this.item = item;
         this.saleDate = date;
         this.currencies = new ArrayList<>(Arrays.asList(currencies));
+        this.currencies.forEach(c -> c.setSale(this));
+    }
+
+    public ShopSale(SoldItem item, LocalDate date, Collection<? extends ReceivedCurrency> currencies) {
+        this.item = item;
+        this.saleDate = date;
+        this.currencies = new ArrayList<>(currencies);
+        this.currencies.forEach(c -> c.setSale(this));
     }
 
     @Override

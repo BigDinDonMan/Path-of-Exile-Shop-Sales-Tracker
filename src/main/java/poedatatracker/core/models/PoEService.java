@@ -17,7 +17,9 @@ import java.util.List;
 public class PoEService {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(generator = "SQLITE-POE-SERVICE")
+    @TableGenerator(name = "SQLITE-POE-SERVICE", pkColumnName = "name", pkColumnValue = "poe_services",
+            valueColumnName = "seq", table = "sqlite_sequence")
     @Column(name = "service_id")
     private long id;
 
@@ -48,5 +50,6 @@ public class PoEService {
     public PoEService(String name, int count, PoEServiceType type, LocalDate date, Collection<? extends PoEServicePayment> payments) {
         this(name, count, type, date);
         this.payments = new ArrayList<>(payments);
+        this.payments.forEach(c -> c.setService(this));
     }
 }

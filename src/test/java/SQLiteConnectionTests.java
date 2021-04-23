@@ -79,4 +79,54 @@ public class SQLiteConnectionTests {
         var selected = currentSession.createQuery(query).getResultList();
         t.commit();
     }
+
+    @Test
+    public void insert_PoEServices_successful() {
+        var t = currentSession.beginTransaction();
+        var payments = Arrays.asList(
+                new PoEServicePayment("Exalted Orb", 3),
+                new PoEServicePayment("Chaos Orb", 30),
+                new PoEServicePayment("Divine Orb", 10)
+        );
+        var testService = new PoEService(
+                "Remove/Add Critical",
+                2,
+                PoEServiceType.HARVEST_CRAFT,
+                LocalDate.of(2021, Month.MARCH, 20),
+                payments
+        );
+        currentSession.save(testService);
+        payments.forEach(currentSession::save);
+        t.commit();
+    }
+
+    @Test
+    public void insert_levelledGems_successful() {
+        var t = currentSession.beginTransaction();
+        var testGem = new LevelledSkillGem(
+                "Pulverise Support",
+                20,
+                20,
+                GemQualityType.SUPERIOR,
+                GemType.SUPPORT,
+                LocalDate.of(2021, 3, 22),
+                false
+        );
+        currentSession.save(testGem);
+        t.commit();
+    }
+
+    @Test
+    public void insert_currencyExchanges_successful() {
+        var t = currentSession.beginTransaction();
+
+        var testExchange = new CurrencyExchange(
+                new ExchangedCurrency("Chaos Orb", 400),
+                new ExchangedCurrency("Exalted Orb" , 4),
+                LocalDate.of(2021, 2, 26)
+        );
+        currentSession.save(testExchange);
+
+        t.commit();
+    }
 }

@@ -50,5 +50,6 @@ public class PoEService {
     public PoEService(String name, int count, PoEServiceType type, LocalDate date, Collection<? extends PoEServicePayment> payments) {
         this(name, count, type, date);
         this.payments = new ArrayList<>(payments);
+        this.payments.forEach(c -> c.setService(this));
     }
 }

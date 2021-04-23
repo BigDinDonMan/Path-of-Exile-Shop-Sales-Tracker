@@ -612,8 +612,8 @@ public class MainWindowController implements Initializable {
 
         saveService.setOnFailed(e -> {
             saveService.cancel();
-            showErrorDialog("Error while saving to database: \n" + e.getSource().getMessage());
             progressDialog.close();
+            showErrorDialog("Error while saving to database: \n" + e.getSource().getMessage());
         });
 
         progressDialog.setTitle("Saving to database...");
